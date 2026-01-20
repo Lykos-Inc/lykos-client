@@ -1,0 +1,15 @@
+/* assets/css/tokens/dark.css */
+.dark {
+    --ui-primary: var(--primary-400);
+    --ui-secondary: var(--secondary-400);
+
+    --ui-bg: var(--darkblue-800);
+    --ui-bg-muted: var(--darkblue-700);
+    --ui-bg-elevated: var(--darkblue-600);
+
+    --ui-text: var(--offwhite-50);
+    --ui-text-muted: var(--offwhite-300);
+
+    --ui-border: var(--darkblue-400);
+    --ui-ring: var(--primary-300);
+}

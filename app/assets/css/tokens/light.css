@@ -1,0 +1,16 @@
+/* assets/css/tokens/light.css */
+:root {
+    /* Nuxt UI tokens */
+    --ui-primary: var(--primary-500);
+    --ui-secondary: var(--secondary-500);
+
+    --ui-bg: var(--offwhite-50);
+    --ui-bg-muted: var(--offwhite-100);
+    --ui-bg-elevated: #FFFFFF;
+
+    --ui-text: var(--darkblue-800);
+    --ui-text-muted: var(--darkblue-400);
+
+    --ui-border: var(--offwhite-300);
+    --ui-ring: var(--primary-400);
+}

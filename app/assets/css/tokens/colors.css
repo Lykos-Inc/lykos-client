@@ -1,0 +1,57 @@
+/* assets/css/tokens/colors.css */
+:root {
+    /* Primary */
+    --primary-50:  #FFF1D5;
+    --primary-100: #FBE2B0;
+    --primary-200: #F1D191;
+    --primary-300: #E3BE76;
+    --primary-400: #CFAA60;
+    --primary-500: #CDA453;
+    --primary-600: #C99E47;
+    --primary-700: #C5983C;
+    --primary-800: #C09132;
+
+    /* Secondary */
+    --secondary-50:  #FFF5D0;
+    --secondary-100: #FFE9A7;
+    --secondary-200: #FFDB85;
+    --secondary-300: #FDCB6A;
+    --secondary-400: #EBB855;
+    --secondary-500: #EAB246;
+    --secondary-600: #E6AC38;
+    --secondary-700: #D9A62C;
+    --secondary-800: #CC9F20;
+
+    /* OffWhite */
+    --offwhite-50:  #FDFBF7;
+    --offwhite-100: #FBF6F1;
+    --offwhite-200: #F7F1EA;
+    --offwhite-300: #F4EDE5;
+    --offwhite-400: #EFE8E0;
+    --offwhite-500: #E4DDD4;
+    --offwhite-600: #D9D1C8;
+    --offwhite-700: #CEC5BC;
+    --offwhite-800: #C3BAB0;
+
+    /* Dark Blue */
+    --darkblue-50:  #40556C;
+    --darkblue-100: #31475C;
+    --darkblue-200: #24384D;
+    --darkblue-300: #182A3D;
+    --darkblue-400: #0C1C2C;
+    --darkblue-500: #091B2C;
+    --darkblue-600: #07192C;
+    --darkblue-700: #04182C;
+    --darkblue-800: #02162B;
+
+    /* Light Blue */
+    --lightblue-50:  #A2E4FF;
+    --lightblue-100: #88D8FF;
+    --lightblue-200: #72CAFD;
+    --lightblue-300: #61BBEF;
+    --lightblue-400: #54ABDD;
+    --lightblue-500: #46A5DC;
+    --lightblue-600: #399FD9;
+    --lightblue-700: #2D98D6;
+    --lightblue-800: #2292CC;
+}

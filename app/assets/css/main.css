@@ -1,48 +1,38 @@
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
+@import "https://unpkg.com/modern-css-reset/dist/reset.min.css";
 
-/* Configuração do Tema Global (Nuxt UI v3) */
-@theme {
-  /* Opcional: Se quiser que a cor "primary" do Nuxt (botões, inputs) seja o seu dourado */
-  --color-primary-500: #CFAA60;
-  --color-primary-600: #EBB855; /* Cor ao passar o mouse */
-}
+/* 2️⃣ Design Tokens */
+@import "./tokens/colors.css";
+@import "./tokens/light.css";
+@import "./tokens/dark.css";
+@import "tailwindcss";
+@import "@nuxt/ui";
 
 :root {
-  /* TEMA CLARO (Padrão) */
-  /* Define o fundo da página como Off-white */
-  --ui-bg: #EFE8E0;
-  /* Define o texto padrão como Azul Escuro */
-  --ui-text: #0C1C2C;
-  /* Define a cor de bordas padrão para algo sutil (ex: azul escuro com transparência) */
-  --ui-border: color-mix(in srgb, #0C1C2C 10%, transparent);
-
-  /* Fontes e outros ajustes já existentes... */
-  font-family: 'Work Sans', system-ui, sans-serif;
-  color-scheme: light;
+  --ui-radius: 0.375rem;
 }
 
-.dark {
-  /* TEMA ESCURO (Dark Mode) */
-  /* Define o fundo como seu Azul Escuro forte */
-  --ui-bg: #0C1C2C;
-  /* Define o texto como Off-white para contraste */
-  --ui-text: #EFE8E0;
-  /* Ajusta bordas para o modo escuro */
-  --ui-border: color-mix(in srgb, #EFE8E0 15%, transparent);
-
-  color-scheme: dark;
+/* 3️⃣ Base styles globais */
+html {
+  font-family: 'Outfit', sans-serif;
 }
 
-/* Garante que o corpo da página use essas variáveis */
 body {
   background-color: var(--ui-bg);
   color: var(--ui-text);
-  /* Transição suave ao trocar de tema */
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Mantém seus estilos de tipografia... */
-h1, h2, h3, p, span, a, label, button {
-  font-family: inherit;
+/* 4️⃣ Estados globais */
+::selection {
+  background-color: var(--ui-primary);
+  color: var(--offwhite-50);
+}
+
+/* 5️⃣ Helpers (opcional) */
+.bg-muted {
+  background-color: var(--ui-bg-muted);
+}
+
+.text-muted {
+  color: var(--ui-text-muted);
 }
