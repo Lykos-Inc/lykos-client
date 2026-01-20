@@ -12,5 +12,15 @@
         <NuxtLink to="/freelancer/produto">Produto</NuxtLink>
         <NuxtLink to="/usuario/inicio">Inicio</NuxtLink>
         <NuxtLink to="/usuario/inicio-logado">Home logado</NuxtLink>
+
+      <button class="mt-4" @click="toggleTheme">Theme Mode</button>
     </div>
 </template>
+
+<script setup>
+const colorMode = useColorMode()
+
+function toggleTheme() {
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+}
+</script>

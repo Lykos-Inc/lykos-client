@@ -4,14 +4,12 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/test-utils',
     '@nuxt/scripts',
-    '@nuxt/eslint'
+    '@nuxt/eslint',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt'
   ],
 
   css: [
     '~/assets/css/main.css'
   ],
-
-  ui: {
-    global: false // tira os estilos globais "extra"
-  }
 })

@@ -1,61 +1,48 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
 
+/* Configuração do Tema Global (Nuxt UI v3) */
+@theme {
+  /* Opcional: Se quiser que a cor "primary" do Nuxt (botões, inputs) seja o seu dourado */
+  --color-primary-500: #CFAA60;
+  --color-primary-600: #EBB855; /* Cor ao passar o mouse */
+}
+
 :root {
-  font-family: 'Work Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* TEMA CLARO (Padrão) */
+  /* Define o fundo da página como Off-white */
+  --ui-bg: #EFE8E0;
+  /* Define o texto padrão como Azul Escuro */
+  --ui-text: #0C1C2C;
+  /* Define a cor de bordas padrão para algo sutil (ex: azul escuro com transparência) */
+  --ui-border: color-mix(in srgb, #0C1C2C 10%, transparent);
 
-  color-scheme: light dark;
-  background-color: #ffffff;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Escalas de fonte fluidas */
-  --font-size-base: clamp(14px, 1vw + 0.5rem, 18px);
-  --font-size-sm: clamp(12px, 0.9vw + 0.4rem, 16px);
-  --font-size-lg: clamp(18px, 1.2vw + 0.6rem, 24px);
-  --font-size-xl: clamp(24px, 2vw + 0.8rem, 36px);
-  --font-size-xxl: clamp(32px, 3vw + 1rem, 48px);
-
-  /* Cores do projeto */
-  --color-dourado: #CFAA60;
-  --color-bege-claro: #EFE8E0;
-  --color-azul-escuro: #0C1C2C;
-  --color-azul-claro: #54ABDD;
-  --color-laranja: #EBB855;
-  --color-fundos:#FFF7F7;
-  --color-fundo-input: #FAFAFA;
+  /* Fontes e outros ajustes já existentes... */
+  font-family: 'Work Sans', system-ui, sans-serif;
+  color-scheme: light;
 }
 
-* {
-  box-sizing: border-box;
+.dark {
+  /* TEMA ESCURO (Dark Mode) */
+  /* Define o fundo como seu Azul Escuro forte */
+  --ui-bg: #0C1C2C;
+  /* Define o texto como Off-white para contraste */
+  --ui-text: #EFE8E0;
+  /* Ajusta bordas para o modo escuro */
+  --ui-border: color-mix(in srgb, #EFE8E0 15%, transparent);
+
+  color-scheme: dark;
 }
 
-/* Aplicações */
+/* Garante que o corpo da página use essas variáveis */
 body {
-  font-size: var(--font-size-base);
+  background-color: var(--ui-bg);
+  color: var(--ui-text);
+  /* Transição suave ao trocar de tema */
+  transition: background-color 0.3s, color 0.3s;
 }
 
-h1 {
-  font-size: var(--font-size-xxl);
-  font-weight: 700;
-}
-
-h2 {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-}
-
-h3 {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-}
-
-p, span, a, label, button {
-  font-size: var(--font-size-base);
-
+/* Mantém seus estilos de tipografia... */
+h1, h2, h3, p, span, a, label, button {
+  font-family: inherit;
 }

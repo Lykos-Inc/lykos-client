@@ -12,10 +12,11 @@ export default defineConfig({
   theme: {
     extend: {
       colors: {
-        dourado: '#CFAA60',
-        azulEscuro: '#0C1C2C',
-        azulClaro: '#54ABDD',
-        laranja: '#EBB855',
+        dourado: '#CFAA60',       // Dourado Principal
+        laranja: '#EBB855',  // Dourado Complementar
+        offWhite: '#EFE8E0',      // Off-white
+        azulEscuro: '#0C1C2C',    // Azul Escuro (Forte)
+        azulClaro: '#54ABDD',     // Azul Claro (Céu)
       }
     }
   }
