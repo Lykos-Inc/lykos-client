@@ -1,32 +1,109 @@
-<script>
+<script setup lang="ts">
+definePageMeta({
+  layout: 'auth'
+})
+
+const state = reactive({
+  email: '',
+  password: ''
+})
+
+const onSubmit = () => {
+  // login logic
+}
 </script>
 
 <template>
-        
-        <UForm class="flex flex-col items-center">
-        <h1 class="text-black mt-20">Entre na sua conta</h1>
-        <UFormField label="Email" class="text-black w-3/12">
-            <UInput variant="none" label="Email" type="email" placeholder="Entrar com seu email" :ui="{
-                        base: 'w-full h-14 px-4 border border-[var(--color-laranja)] rounded-xl focus:ring-2  focus:ring-[var(--color-laranja)]'
-                    }" class=" w-full rounded placeholder-[var(--color-dourado)]" />
-        </UFormField>
-        <UFormField label="Senha" class="text-black w-3/12 mt-5">
-            <UInput variant="none"  label="Senha" type="email" placeholder="Entrar com sua senha" :ui="{
-                        base: 'w-full h-14 px-4 border border-[var(--color-laranja)] rounded-xl focus:ring-2  focus:ring-[var(--color-laranja)]'
-                    }" class=" w-full rounded placeholder-[var(--color-dourado)]" />
-        </UFormField>
-
-        <a href="" class="text-[var(--color-dourado)] mt-5">Esqueceu a senha?</a>
-        <div class="w-3/12">
-            <button class="bg-[var(--color-dourado)] text-white  py-2 rounded mt-10 mb-10 cursor-pointer w-full">
-            Login 
-        </button>
+  <div
+      class="
+      min-h-screen
+      flex items-center justify-center
+      bg-[var(--ui-bg)]
+      px-[var(--space-4)]
+    "
+  >
+    <UCard
+        class="w-full max-w-md"
+        :ui="{
+          root: 'bg-[var(--ui-bg-elevated)] ring-1 ring-[var(--ui-border)]'
+        }"
+    >
+      <UForm
+          :state="state"
+          class="space-y-[var(--space-6)]"
+          @submit="onSubmit"
+      >
+        <!-- TITLE -->
+        <div class="text-center space-y-[var(--space-2)]">
+          <h1 class="text-xl font-semibold text-[var(--ui-text)]">
+            Entre na sua conta
+          </h1>
+          <p class="text-sm text-[var(--ui-text-muted)]">
+            Acesse sua conta para continuar
+          </p>
         </div>
-        <p class="text-[var(--color-dourado)] mt-5">Ja tem uma conta?</p>
 
-            <button class="border border-[var(--color-dourado)] text-[var(--color-dourado)] bg-white p-2   rounded mt-10 mb-10 cursor-pointer ">
-            Criar Conta 
-        </button>
+        <!-- EMAIL -->
+        <UFormField label="Email">
+          <UInput
+              v-model="state.email"
+              type="email"
+              placeholder="Digite seu email"
+              size="lg"
+              class="w-full"
+          />
+        </UFormField>
 
-        </UForm>
+        <!-- PASSWORD -->
+        <UFormField label="Senha">
+          <UInput
+              v-model="state.password"
+              type="password"
+              placeholder="Digite sua senha"
+              size="lg"
+              class="w-full"
+          />
+        </UFormField>
+
+        <!-- FORGOT -->
+        <div class="flex justify-end">
+          <ULink
+              to="/recuperar-senha"
+              class="text-sm"
+          >
+            Esqueceu a senha?
+          </ULink>
+        </div>
+
+        <!-- SUBMIT -->
+        <UButton
+            type="submit"
+            size="lg"
+            block
+            color="primary"
+        >
+          Entrar
+        </UButton>
+
+        <!-- DIVIDER -->
+        <UDivider label="ou" />
+
+        <!-- SIGN UP -->
+        <div class="text-center space-y-[var(--space-3)]">
+          <p class="text-sm text-[var(--ui-text-muted)]">
+            Ainda não tem uma conta?
+          </p>
+
+          <UButton
+              to="/signup"
+              variant="outline"
+              size="lg"
+              block
+          >
+            Criar conta
+          </UButton>
+        </div>
+      </UForm>
+    </UCard>
+  </div>
 </template>

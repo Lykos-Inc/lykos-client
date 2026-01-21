@@ -1,6 +1,10 @@
 <script setup>
 import { ref, reactive, computed } from "vue"
 
+definePageMeta({
+  layout: 'DefaultLayout',
+})
+
 const Sugestoescategorias = ref([
     "Design Gráfico",
     "Desenvolvimento Web",

@@ -1,4 +1,7 @@
 <script>
+definePageMeta({
+  layout: 'DefaultLayout',
+})
 </script>
 <template>
 <body>

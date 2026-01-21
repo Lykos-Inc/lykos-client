@@ -1,87 +1,162 @@
-<template>
-
-    <body>
-        <div class="flex items-center justify-center min-h-screen flex-col max-w-800 mx-auto p-4">
-            <h1 class="text-2xl font-bold mb-6 text-center text-black">
-                Crie sua conta
-            </h1>
-
-
-
-            <UForm :schema="schema" :state="state" class="space-y-4 max-w-xl w-full mx-auto" @submit="handleSubmit">
-                <UFormField label="Nome Completo" name="nome"
-                    :ui="{ label: 'text-black', error: 'text-[var(--color-laranja)] text-sm mt-1', }">
-                    <UInput v-model="state.nome" variant="none" placeholder="Entre com seu nome completo" class="w-full" :ui="{
-                        base: 'w-full h-14 px-4 border border-[var(--color-laranja)] rounded-xl text-[#94824F] focus:ring-2 focus:ring-[var(--color-laranja)]'
-                    }" />
-                </UFormField>
-                <UFormField label="Email" name="email" class="block text-left font-medium"
-                    :ui="{ label: 'text-black', error: 'text-[var(--color-laranja)] text-sm mt-1', }">
-                    <UInput v-model="state.email" variant="none" placeholder="Entre com seu email" :ui="{
-                        base: 'w-full h-14 px-4 border border-[var(--color-laranja)] rounded-xl text-[#94824F] focus:ring-2 focus:ring-[var(--color-laranja)]'
-                    }" class="w-full" />
-                </UFormField>
-                <UFormField label="Senha" name="senha"
-                    :ui="{ label: 'text-black', error: 'text-[var(--color-laranja)] text-sm mt-1', }">
-                    <UInput v-model="state.senha" variant="none" type="password" placeholder="Entre com sua senha" :ui="{
-                        base: 'w-full h-14 px-4 border border-[var(--color-laranja)] rounded-xl text-[#94824F] focus:ring-2 focus:ring-[var(--color-laranja)]'
-                    }" class="w-full" />
-                </UFormField>
-                <UFormField label="Confirmar Senha" name="confirmarSenha"
-                    :ui="{ label: 'text-black', error: 'text-[var(--color-laranja)] text-sm mt-1', }">
-                    <UInput v-model="state.confirmarSenha" variant="none" type="password" placeholder="Confirme sua senha" :ui="{
-                        base: 'w-full h-14 px-4 border border-[var(--color-laranja)] rounded-xl text-[#94824F] focus:ring-2 focus:ring-[var(--color-laranja)]'
-                    }" class="w-full" />
-                </UFormField>
-
-                <div class="mt-6 flex flex-col items-center gap-4">
-                    <UButton type="submit"
-                        class="flex flex-col h-14 px-15 justify-center items-center rounded-lg bg-[var(--color-laranja)] text-white">
-                        Inscrever-se
-                    </UButton>
-                </div>
-
-            </UForm>
-
-            <!-- Links -->
-            <div class="mt-6 flex flex-col items-center gap-4">
-                <a href="#" class="text-sm text-[#94824F] hover:underline">
-                    Já tem uma conta?
-                </a>
-
-                <a href="#"
-                    class="flex h-14 items-center justify-center rounded-md border px-6 text-[var(--color-laranja)]">
-                    Entrar
-                </a>
-            </div>
-        </div>
-    </body>
-</template>
-
 <script setup lang="ts">
 import * as v from 'valibot'
+import type { FormSubmitEvent } from '#ui/types'
+
+definePageMeta({
+  layout: 'auth'
+})
 
 const schema = v.object({
-    nome: v.pipe(v.string(), v.minLength(1, 'Nome é obrigatório')),
-    email: v.pipe(v.string(), v.email('Email inválido')),
-    senha: v.pipe(v.string(), v.minLength(8, 'A senha deve ter no mínimo 8 caracteres')),
-    confirmarSenha: v.string()
+  name: v.pipe(v.string(), v.minLength(1, 'Nome é obrigatório')),
+  username: v.pipe(v.string(), v.minLength(1, 'Nome de usuário é obrigatório')),
+  email: v.pipe(v.string(), v.email('Email inválido')),
+  password: v.pipe(v.string(), v.minLength(8, 'A senha deve ter no mínimo 8 caracteres')),
+  confirmPassword: v.pipe(v.string(), v.minLength(1, 'Confirmação de senha é obrigatória'))
 })
+
+type Schema = v.InferOutput<typeof schema>
 
 const state = reactive({
-    nome: '',
-    email: '',
-    senha: '',
-    confirmarSenha: ''
+  name: '',
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: ''
 })
 
-function handleSubmit() {
-    if (state.senha !== state.confirmarSenha) {
-        alert('As senhas não coincidem')
-        return
-    }
+const onSubmit = (event: FormSubmitEvent<Schema>) => {
+  if (state.password !== state.confirmPassword) {
+    // Dica: Em um cenário real, você injetaria um erro no formulário aqui
+    alert('As senhas não coincidem')
+    return
+  }
 
-    console.log('Usuário cadastrado com sucesso:', state)
+  console.log('Dados validados:', event.data)
+  // Lógica de cadastro aqui...
 }
 </script>
 
+<template>
+  <div
+      class="
+      min-h-screen
+      flex items-center justify-center
+      bg-[var(--ui-bg)]
+      px-[var(--space-4)]
+    "
+  >
+    <UCard
+        class="w-full max-w-md"
+        :ui="{
+          root: 'bg-[var(--ui-bg-elevated)] ring-1 ring-[var(--ui-border)]'
+        }"
+    >
+      <!-- Header -->
+      <template #header>
+        <div class="text-center space-y-2">
+          <h1 class="text-2xl font-semibold text-[var(--ui-text)]">
+            Crie sua conta
+          </h1>
+          <p class="text-sm text-[var(--ui-text-muted)]">
+            Preencha os dados para começar
+          </p>
+        </div>
+      </template>
+
+      <!-- Form -->
+      <UForm
+          :schema="schema"
+          :state="state"
+          class="space-y-[var(--space-6)]"
+          @submit="onSubmit"
+      >
+        <!-- EMAIL -->
+        <UFormField label="Nome Completo">
+          <UInput
+              v-model="state.name"
+              type="email"
+              placeholder="Digite seu Nome"
+              size="lg"
+              class="w-full"
+          />
+        </UFormField>
+
+        <!-- EMAIL -->
+        <UFormField label="Nome de Usuário">
+          <UInput
+              v-model="state.username"
+              type="email"
+              placeholder="Digite seu nome de usuário"
+              size="lg"
+              class="w-full"
+          />
+        </UFormField>
+
+
+        <!-- EMAIL -->
+        <UFormField label="Email">
+          <UInput
+              v-model="state.email"
+              type="email"
+              placeholder="Digite seu email"
+              size="lg"
+              class="w-full"
+          />
+        </UFormField>
+
+        <!-- PASSWORD -->
+        <UFormField label="Senha">
+          <UInput
+              v-model="state.password"
+              type="password"
+              placeholder="Digite sua senha"
+              size="lg"
+              class="w-full"
+          />
+        </UFormField>
+
+        <!-- PASSWORD -->
+        <UFormField label="Senha">
+          <UInput
+              v-model="state.confirmPassword"
+              type="password"
+              placeholder="Digite sua senha"
+              size="lg"
+              class="w-full"
+          />
+        </UFormField>
+
+        <!-- SUBMIT -->
+        <UButton
+            type="submit"
+            size="lg"
+            block
+            color="primary"
+        >
+          Criar conta
+        </UButton>
+
+        <!-- DIVIDER -->
+        <UDivider label="ou" />
+
+        <!-- SIGN UP -->
+        <div class="text-center space-y-[var(--space-3)]">
+          <p class="text-sm text-[var(--ui-text-muted)]">
+            Já tem uma conta?
+          </p>
+
+          <UButton
+              to="/login"
+              variant="outline"
+              size="lg"
+              block
+              class="my-[var(space-4)]"
+          >
+            Entrar
+          </UButton>
+        </div>
+
+      </UForm>
+    </UCard>
+  </div>
+</template>

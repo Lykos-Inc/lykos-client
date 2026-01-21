@@ -1,6 +1,9 @@
 <script setup lang="ts">
-
 import { ref, computed } from 'vue';
+
+definePageMeta({
+  layout: 'DefaultLayout',
+})
 
 // ------ Skills ------
 const novaSkill = ref('');

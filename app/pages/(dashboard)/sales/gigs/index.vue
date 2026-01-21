@@ -1,4 +1,8 @@
 <script setup>
+definePageMeta({
+  layout: 'DefaultLayout',
+})
+
 const images = [
     {
         src: 'https://picsum.photos/200?random=1',

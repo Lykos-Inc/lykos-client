@@ -1,16 +1,41 @@
-/* assets/css/tokens/light.css */
 :root {
-    /* Nuxt UI tokens */
+    /* ======================================================
+       COLOR TOKENS (Nuxt UI semantic)
+       ====================================================== */
     --ui-primary: var(--primary-500);
     --ui-secondary: var(--secondary-500);
 
     --ui-bg: var(--offwhite-50);
     --ui-bg-muted: var(--offwhite-100);
-    --ui-bg-elevated: #FFFFFF;
+    --ui-bg-elevated: #ffffff;
 
     --ui-text: var(--darkblue-800);
     --ui-text-muted: var(--darkblue-400);
 
     --ui-border: var(--offwhite-300);
     --ui-ring: var(--primary-400);
+
+    /* ======================================================
+       SPACING
+       ====================================================== */
+    --ui-padding: var(--space-4);
+    --ui-gap: var(--space-3);
+
+    /* ======================================================
+       RADIUS
+       ====================================================== */
+    --ui-radius: var(--radius-lg);
+
+    /* ======================================================
+       TYPOGRAPHY
+       ====================================================== */
+    --ui-font: var(--font-sans);
+
+    --ui-text-xs: var(--text-xs);
+    --ui-text-sm: var(--text-sm);
+    --ui-text-md: var(--text-md);
+    --ui-text-lg: var(--text-lg);
+    --ui-text-xl: var(--text-xl);
+
+    --ui-leading: var(--leading-normal);
 }

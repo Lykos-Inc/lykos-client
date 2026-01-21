@@ -1,0 +1,20 @@
+:root {
+    /* Primary */
+    --btn-primary-bg: var(--primary-500);
+    --btn-primary-bg-hover: var(--primary-600);
+    --btn-primary-text: var(--darkblue-800);
+
+    /* Secondary */
+    --btn-secondary-bg: transparent;
+    --btn-secondary-border: var(--secondary-500);
+    --btn-secondary-text: var(--secondary-500);
+    --btn-secondary-hover-bg: var(--secondary-100);
+
+    /* Ghost */
+    --btn-ghost-text: var(--darkblue-600);
+    --btn-ghost-hover-bg: var(--offwhite-200);
+
+    /* Disabled */
+    --btn-disabled-bg: var(--offwhite-300);
+    --btn-disabled-text: var(--offwhite-600);
+}

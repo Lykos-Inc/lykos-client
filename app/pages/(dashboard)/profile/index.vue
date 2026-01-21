@@ -1,6 +1,10 @@
 <script setup>
 import { MapPin, User, Language, Clock } from "@iconoir/vue"
 
+definePageMeta({
+  layout: 'DefaultLayout',
+})
+
 const user = {
   name: "Bruno Nunes",
   username: "@brunonunes",

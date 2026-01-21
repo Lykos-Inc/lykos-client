@@ -1,9 +1,13 @@
 <script setup>
 import { ref } from "vue";
+import { Lock } from "@iconoir/vue"
+
+definePageMeta({
+  layout: 'DefaultLayout',
+})
 const logoChecked = ref(true)
 const revisionsChecked = ref(true)
-const metPagamento = ref("Crédito"); 
-import { Lock } from "@iconoir/vue"
+const metPagamento = ref("Crédito");
 
  
 
