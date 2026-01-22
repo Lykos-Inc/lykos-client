@@ -1,18 +1,19 @@
 @import "https://unpkg.com/modern-css-reset/dist/reset.min.css";
+@import "tailwindcss";
+@import "@nuxt/ui";
 
-/* 2️⃣ Design Tokens */
+/* 2️⃣ Design ./tokens */
 @import "./tokens/colors.css";
-@import "./tokens/spacing.css";
 @import "./tokens/radius.css";
 @import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/dark.css";
+@import "./tokens/light.css";
+@import "./tokens/components/alert.css";
 @import "./tokens/components/button.css";
 @import "./tokens/components/card.css";
 @import "./tokens/components/input.css";
-@import "./tokens/components/alert.css";
-@import "./tokens/light.css";
-@import "./tokens/dark.css";
-@import "tailwindcss";
-@import "@nuxt/ui";
+@import "./tokens/components/status.css";
 
 :root {
   --ui-radius: 0.375rem;
