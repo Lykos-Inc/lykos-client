@@ -1,281 +1,304 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import {ref, reactive} from 'vue'
 
 definePageMeta({
-  layout: 'DefaultLayout',
+  layout: 'default',
 })
 
-// ------ Skills ------
-const novaSkill = ref('');
-const skills = ref<string[]>([]);
+// --- Enums & Opções ---
+const niveisIdioma = [
+  {label: 'Básico', value: 'BASICO'},
+  {label: 'Intermediário', value: 'INTERMEDIARIO'},
+  {label: 'Avançado', value: 'AVANCADO'},
+  {label: 'Fluente', value: 'FLUENTE'},
+  {label: 'Nativo', value: 'NATIVO'}
+]
+
 const sugestoesSkillsBase = [
   'React', 'Angular', 'Vue.js', 'Node.js', 'Python', 'Java',
   'TypeScript', 'PHP', 'C#', 'Go', 'Swift', 'Kotlin', 'SQL', 'Docker'
-];
-const sugestoesSkillsFiltradas = computed(() =>
-  novaSkill.value
-    ? sugestoesSkillsBase.filter(s =>
-      s.toLowerCase().includes(novaSkill.value.toLowerCase()) &&
-      !skills.value.includes(s)
-    )
-    : []
-);
-function adicionarSkill(skill?: string) {
-  const valor = (skill || novaSkill.value).trim();
-  if (valor && !skills.value.includes(valor)) {
-    skills.value.push(valor);
-  }
-  novaSkill.value = '';
-}
-function removerSkill(skill: string) {
-  skills.value = skills.value.filter((s: string) => s !== skill);
-}
+]
 
-// ------ Idiomas ------
-const novoIdioma = ref('');
-const idiomas = ref<string[]>([]);
 const sugestoesIdiomasBase = [
-  'Português', 'Inglês', 'Espanhol', 'Francês', 'Alemão', 'Italiano',
-  'Mandarim', 'Japonês', 'Coreano', 'Russo', 'Árabe'
-];
-const sugestoesIdiomasFiltradas = computed(() =>
-  novoIdioma.value
-    ? sugestoesIdiomasBase.filter(i =>
-      i.toLowerCase().includes(novoIdioma.value.toLowerCase()) &&
-      !idiomas.value.includes(i)
-    )
-    : []
-);
-function adicionarIdioma(idioma?: string) {
-  const valor = (idioma || novoIdioma.value).trim();
-  if (valor && !idiomas.value.includes(valor)) {
-    idiomas.value.push(valor);
-  }
-  novoIdioma.value = '';
-}
-function removerIdioma(idioma: string) {
-  idiomas.value = idiomas.value.filter((i: string) => i !== idioma);
-}
+  'Português', 'Inglês', 'Espanhol', 'Francês', 'Alemão', 'Italiano'
+]
 
-const form = ref({
-  nome: '',
-  fotoPerfil: null as File | null,
-  descricao: '',
-  idiomas: [] as string[],
-  skills: [] as string[],
+// --- State do Formulário Final (Payload) ---
+const form = reactive({
+  nome_exibicao: '',
+  bio: '',
+  foto_perfil: null as File | null,
+  idiomas: [] as { idioma: string; nivel: string }[],
+  habilidades: [] as { nome: string }[],
+  formacoes: [] as { titulo: string; instituicao: string; ano_conclusao: string }[]
+})
+
+// --- State Temporário (Inputs de Adição) ---
+const temp = reactive({
+  skillInput: '',
+  idiomaInput: '',
+  idiomaNivel: 'BASICO',
   formacao: {
     titulo: '',
     instituicao: '',
     ano: ''
-  },
-  experiencia: {
-    empresa: '',
-    cargo: '',
-    periodoInicio: '',
-    periodoFim: ''
   }
-});
+})
 
-function handleFileUpload(event: Event) {
-  const target = event.target as HTMLInputElement;
+// --- Métodos de Habilidades ---
+const adicionarSkill = (valor?: string) => {
+  const nome = (valor || temp.skillInput).trim()
+  if (!nome) return
+
+  // Evita duplicatas
+  if (!form.habilidades.some(h => h.nome.toLowerCase() === nome.toLowerCase())) {
+    form.habilidades.push({nome})
+  }
+  temp.skillInput = ''
+}
+
+const removerSkill = (index: number) => {
+  form.habilidades.splice(index, 1)
+}
+
+// --- Métodos de Idiomas ---
+const adicionarIdioma = (valor?: string) => {
+  const idiomaNome = (valor || temp.idiomaInput).trim()
+  if (!idiomaNome) return
+
+  // Evita duplicatas de idioma (independente do nível)
+  if (!form.idiomas.some(i => i.idioma.toLowerCase() === idiomaNome.toLowerCase())) {
+    form.idiomas.push({
+      idioma: idiomaNome,
+      nivel: temp.idiomaNivel
+    })
+  }
+  temp.idiomaInput = ''
+  temp.idiomaNivel = 'BASICO' // Reset
+}
+
+const removerIdioma = (index: number) => {
+  form.idiomas.splice(index, 1)
+}
+
+// --- Métodos de Formação ---
+const adicionarFormacao = () => {
+  const {titulo, instituicao, ano} = temp.formacao
+  if (!titulo || !instituicao || !ano) {
+    alert('Preencha todos os campos da formação')
+    return
+  }
+
+  form.formacoes.push({
+    titulo,
+    instituicao,
+    ano_conclusao: ano
+  })
+
+  // Reset
+  temp.formacao.titulo = ''
+  temp.formacao.instituicao = ''
+  temp.formacao.ano = ''
+}
+
+const removerFormacao = (index: number) => {
+  form.formacoes.splice(index, 1)
+}
+
+// --- Upload de Foto ---
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
-    // form.value.fotoPerfil = target.files[0];
-    // ✅ Checa se fotoPerfil não é null antes de acessar name
-    if (form.value.fotoPerfil) {
-      console.log('Foto de perfil recebida:', form.value.fotoPerfil.name);
-    }
-  } else {
-    form.value.fotoPerfil = null;
-    console.warn('Nenhuma foto de perfil foi selecionada.');
+    form.foto_perfil = target.files[0]
   }
 }
 
+// --- Envio ---
+const handleSubmit = async () => {
+  // Validação simples
+  if (!form.nome_exibicao) return alert('Nome de exibição obrigatório')
+  if (!form.bio) return alert('Bio obrigatória')
+  if (form.habilidades.length === 0) return alert('Adicione pelo menos uma habilidade')
+  if (form.idiomas.length === 0) return alert('Adicione pelo menos um idioma')
 
-function handleSubmit() {
-  try {
-    
-
-    form.value.idiomas = idiomas.value;
-    form.value.skills = skills.value;
-
-    const validators = [
-      { valid: form.value.nome?.trim(), msg: 'Nome é obrigatório' },
-      { valid: form.value.fotoPerfil, msg: 'Foto de perfil é obrigatória' },
-      { valid: form.value.descricao?.trim(), msg: 'Descrição do perfil é obrigatória' },
-      { valid: form.value.idiomas.length > 0, msg: 'Pelo menos um idioma é obrigatório' },
-      { valid: form.value.skills.length > 0, msg: 'Pelo menos uma habilidade é obrigatória' },
-      { valid: form.value.formacao.titulo?.trim(), msg: 'Título da formação é obrigatório' },
-      { valid: form.value.formacao.instituicao?.trim(), msg: 'Instituição é obrigatória' },
-      { valid: form.value.formacao.ano?.trim(), msg: 'Ano de conclusão é obrigatório' },
-      { valid: form.value.experiencia.empresa?.trim(), msg: 'Empresa é obrigatória' },
-      { valid: form.value.experiencia.cargo?.trim(), msg: 'Cargo é obrigatório' }
-    ];
-
-    const erro = validators.find(v => !v.valid);
-    if (erro) {
-      alert(erro.msg);
-      return;
-    }
-
-    console.log('Freelancer cadastrado com sucesso:', form.value);
-  } catch (error) {
-    console.error('Erro ao processar formulário', error);
+  // JSON Final para o Backend
+  const payload = {
+    nome_exibicao: form.nome_exibicao,
+    bio: form.bio,
+    idiomas: form.idiomas,      // Já está no formato [{idioma, nivel}]
+    habilidades: form.habilidades, // Já está no formato [{nome}]
+    formacoes: form.formacoes   // Já está no formato lista
   }
+
+  console.log('Payload pronto para envio:', JSON.stringify(payload, null, 2))
+
+  // Exemplo de envio com FormData se for mandar a foto junto:
+  /*
+  const formData = new FormData()
+  formData.append('data', JSON.stringify(payload))
+  if (form.foto_perfil) formData.append('foto_perfil', form.foto_perfil)
+  await $fetch('/api/freelancers', { method: 'POST', body: formData })
+  */
 }
 </script>
 
 <template>
-  <main>
-    <div class="flex flex-col min-h-screen max-w-lg w-full mx-auto p-4">
-      <h1 class="text-3xl font-bold mb-6">
-        Torne-se um freelancer
-      </h1>
+  <div class="min-h-screen bg-[var(--ui-bg)] p-[var(--space-4)] flex justify-center">
+    <div class="w-full max-w-3xl">
 
-      <form class="space-y-6" @submit.prevent="handleSubmit">
-        <!-- Nome de usuário -->
-        <div class="mb-6">
-          <label for="nome" class="block mb-2">Nome de usuário</label>
-          <input type="text" name="nome" id="nome" v-model="form.nome" placeholder="Seu identificador público na plataforma"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full mb-4 placeholder-[var(--color-dourado)] bg-[var(--color-fundo-input)]" />
-        </div>
+      <div class="mb-[var(--space-6)] text-center">
+        <h1 class="text-3xl font-bold text-[var(--ui-text)]">Torne-se um Freelancer</h1>
+        <p class="text-[var(--ui-text-muted)]">Complete seu perfil profissional para começar a vender</p>
+      </div>
 
-        <!-- Foto de perfil -->
-        <div
-          class="flex flex-col items-center mb-6 border border-dashed border-[var(--color-dourado)] rounded p-4 pt-5">
-          <h2 class="text-2xl pb-4">Foto de perfil</h2>
-          <p class="text-center pb-4">
-            Envie uma foto profissional que mostre claramente <br /> o seu rosto
-          </p>
-          <label for="arquivo" class="p-2 rounded-md bg-[var(--color-fundos)] text-base cursor-pointer">
-            Carregar
-          </label>
-          <input type="file" id="arquivo" class="hidden" @change="handleFileUpload"/>
-        </div>
+      <form @submit.prevent="handleSubmit" class="space-y-[var(--space-6)]">
 
-        <!-- Descrição do perfil -->
-        <div class="mb-6">
-          <label for="descricao" class="block mb-2">Descrição do perfil</label>
-          <textarea name="descricao" id="descricao" rows="4" v-model="form.descricao"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full mb-4 bg-[var(--color-fundo-input)] text-[var(--color-dourado)]"></textarea>
-        </div>
+        <UCard :ui="{ root: 'bg-[var(--ui-bg-elevated)] ring-1 ring-[var(--ui-border)]' }">
+          <div class="space-y-[var(--space-4)]">
 
-        <!-- Idiomas -->
-        <div class="mb-6 relative">
-          <label for="idioma" class="block mb-2">Idiomas</label>
-          <input id="idioma" type="text" v-model="novoIdioma" @keydown.enter.prevent="adicionarIdioma()"
-            placeholder="Digite um idioma e pressione Enter"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full bg-[var(--color-fundo-input)]" />
-          <ul v-if="sugestoesIdiomasFiltradas.length"
-            class="absolute z-10 w-full bg-white border border-gray-300 rounded shadow mt-1 max-h-40 overflow-y-auto">
-            <li v-for="(i, index) in sugestoesIdiomasFiltradas" :key="index" @click="adicionarIdioma(i)"
-              class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-[var(--color-dourado)]">
-              {{ i }}
-            </li>
-          </ul>
-          <div class="flex flex-wrap gap-2 mt-3">
-            <span v-for="(idioma, index) in idiomas" :key="index"
-              class="bg-[var(--color-fundo-input)] px-3 py-1 rounded flex items-center gap-2 text-[var(--color-dourado)]">
-              {{ idioma }}
-              <button type="button" @click="removerIdioma(idioma)" class="text-red-500 font-bold">×</button>
-            </span>
+            <div class="flex flex-col items-center p-4 border-2 border-dashed border-[var(--ui-border)] rounded-lg">
+              <div v-if="form.foto_perfil" class="mb-2 text-[var(--ui-primary)] font-bold">
+                {{ form.foto_perfil.name }}
+              </div>
+              <div v-else class="text-[var(--ui-text-muted)] mb-2">Nenhuma foto selecionada</div>
+
+              <label
+                  class="cursor-pointer bg-[var(--ui-bg)] text-[var(--ui-primary)] px-4 py-2 rounded border border-[var(--ui-primary)] hover:bg-[var(--ui-primary)] hover:text-white transition">
+                Selecionar Foto
+                <input type="file" class="hidden" accept="image/*" @change="handleFileUpload"/>
+              </label>
+            </div>
+
+            <UFormField label="Nome de Exibição (Público)" required>
+              <UInput v-model="form.nome_exibicao" placeholder="Ex: Bruno Nunes Dev" size="lg"/>
+            </UFormField>
+
+            <UFormField label="Bio / Sobre Mim" required>
+              <UTextarea v-model="form.bio" :rows="4"
+                         placeholder="Conte um pouco sobre sua experiência e o que você oferece..."/>
+            </UFormField>
           </div>
-        </div>
+        </UCard>
 
-        <!-- Habilidades -->
-        <div class="mb-6 relative">
-          <label for="skill" class="block mb-2">Habilidades</label>
-          <input id="skill" type="text" v-model="novaSkill" @keydown.enter.prevent="adicionarSkill()"
-            placeholder="Digite uma habilidade e pressione Enter"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full bg-[var(--color-fundo-input)]" />
-          <ul v-if="sugestoesSkillsFiltradas.length"
-            class="absolute z-10 w-full bg-white border border-gray-300 rounded shadow mt-1 max-h-40 overflow-y-auto">
-            <li v-for="(s, index) in sugestoesSkillsFiltradas" :key="index" @click="adicionarSkill(s)"
-              class="px-3 py-2 cursor-pointer hover:bg-gray-100 text-[var(--color-dourado)]">
-              {{ s }}
-            </li>
-          </ul>
-          <div class="flex flex-wrap gap-2 mt-3">
-            <span v-for="(skill, index) in skills" :key="index"
-              class="bg-[var(--color-fundo-input)] px-3 py-1 rounded flex items-center gap-2 text-[var(--color-dourado)]">
-              {{ skill }}
-              <button type="button" @click="removerSkill(skill)" class="text-red-500 font-bold">×</button>
-            </span>
+        <UCard :ui="{ root: 'bg-[var(--ui-bg-elevated)] ring-1 ring-[var(--ui-border)]' }">
+          <template #header>
+            <h3 class="font-semibold text-[var(--ui-text)]">Competências</h3>
+          </template>
+
+          <div class="space-y-[var(--space-6)]">
+
+            <div>
+              <label class="block text-sm font-medium text-[var(--ui-text)] mb-2">Habilidades Técnicas</label>
+              <div class="flex gap-2 mb-2">
+                <UInputMenu
+                    v-model="temp.skillInput"
+                    :options="sugestoesSkillsBase"
+                    placeholder="Digite ou selecione (ex: Python)"
+                    class="flex-1"
+                    @keydown.enter.prevent="adicionarSkill()"
+                    trailing-icon="i-heroicons-chevron-up-down-20-solid"
+                />
+                <UButton icon="i-heroicons-plus" color="primary" variant="soft" @click="adicionarSkill()"/>
+              </div>
+
+              <div class="flex flex-wrap gap-2 mt-2">
+                <span v-for="(skill, index) in form.habilidades" :key="index"
+                      class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[var(--ui-bg)] text-[var(--ui-primary)] border border-[var(--ui-primary)]">
+                  {{ skill.nome }}
+                  <button type="button" class="ml-2 text-red-500 hover:text-red-700 font-bold"
+                          @click="removerSkill(index)">×</button>
+                </span>
+              </div>
+            </div>
+
+            <UDivider/>
+
+            <div>
+              <label class="block text-sm font-medium text-[var(--ui-text)] mb-2">Idiomas</label>
+              <div class="flex gap-2 items-start"> <div class="flex-1">
+                <UInputMenu
+                    v-model="temp.idiomaInput"
+                    :options="sugestoesIdiomasBase"
+                    placeholder="Idioma (ex: Inglês)"
+                    @keydown.enter.prevent="adicionarIdioma()"
+                    trailing-icon="i-heroicons-chevron-up-down-20-solid"
+                />
+              </div>
+
+                <div class="w-1/3">
+                  <USelectMenu
+                      v-model="temp.idiomaNivel"
+                      :options="niveisIdioma"
+                      option-attribute="label"
+                      value-attribute="value"
+                      placeholder="Nível"
+                  />
+                </div>
+
+                <UButton icon="i-heroicons-plus" color="primary" variant="soft" @click="adicionarIdioma()" />
+              </div>
+
+              <ul class="mt-4 space-y-2">
+                <li v-for="(item, index) in form.idiomas" :key="index"
+                    class="flex justify-between items-center bg-[var(--ui-bg)] p-2 rounded border border-[var(--ui-border)]">
+                  <div>
+                    <span class="font-bold text-[var(--ui-text)]">{{ item.idioma }}</span>
+                    <span class="text-xs text-[var(--ui-text-muted)] ml-2">({{ niveisIdioma.find(n => n.value === item.nivel)?.label }})</span>
+                  </div>
+                  <button type="button" class="text-red-500 hover:text-red-700 text-sm" @click="removerIdioma(index)">Remover</button>
+                </li>
+              </ul>
+            </div>
+
           </div>
-        </div>
+        </UCard>
 
-        <!--Formação-->
-        <h3><strong>Formação e Certificações</strong></h3>
-        <div class="mb-6">
-          <label for="formacao" class="block mb-2">Titulo da formação</label>
-          <input type="text" name="formacao" id="formacao" placeholder="Ex: Licenciatura, bacharel, técnico..." v-model="form.formacao.titulo"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full mb-4 placeholder-[var(--color-dourado)] bg-[var(--color-fundo-input)]" />
-        </div>
-        <div class="mb-6">
-          <label for="instituicao" class="block mb-2">Instituição</label>
-          <input type="text" name="instituicao" id="instituicao" placeholder="Nome da instituição" v-model="form.formacao.instituicao"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full mb-4 placeholder-[var(--color-dourado)] bg-[var(--color-fundo-input)]" />
-        </div>
-        <div class="mb-6">
-          <label for="Ano" class="block mb-2">Ano</label>
-          <input type="text" name="Ano" id="Ano" placeholder="Ex: 2020" v-model="form.formacao.ano"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full mb-4 bg-[var(--color-fundo-input)]" />
-        </div>
+        <UCard :ui="{ root: 'bg-[var(--ui-bg-elevated)] ring-1 ring-[var(--ui-border)]' }">
+          <template #header>
+            <h3 class="font-semibold text-[var(--ui-text)]">Formação Acadêmica</h3>
+          </template>
 
-        <!--Experiência-->
-        <h3><strong>Experiência profissional</strong></h3>
-        <div class="mb-6">
-          <label for="empresa" class="block mb-2">Empresa</label>
-          <input type="text" name="empresa" id="empresa" placeholder="Nome da empresa" v-model="form.experiencia.empresa"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full mb-4 placeholder-[var(--color-dourado)] bg-[var(--color-fundo-input)]" />
-        </div>
-        <div class="mb-6">
-          <label for="cargo" class="block mb-2">Cargo</label>
-          <input type="text" name="cargo" id="cargo" placeholder="Ex: Desenvolvedor, designer..." v-model="form.experiencia.cargo"
-            class="border border-[var(--color-dourado)] rounded p-2 w-full mb-4 placeholder-[var(--color-dourado)] bg-[var(--color-fundo-input)]" />
-        </div>
-        <div class="mb-6">
-          <label for="periodo" class="mb-2 block">Período</label>
-          <div class="flex gap-4">
-            <input type="text" name="inicio" id="inicio" placeholder="Início" v-model="form.experiencia.periodoInicio"
-              class="border border-[var(--color-dourado)] rounded p-2 w-1/2 placeholder-[var(--color-dourado)] bg-[var(--color-fundo-input)]" />
-            <input type="text" name="fim" id="fim" placeholder="Fim" v-model="form.experiencia.periodoFim"
-              class="border border-[var(--color-dourado)] rounded p-2 w-1/2 placeholder-[var(--color-dourado)] bg-[var(--color-fundo-input)]" />
+          <div class="space-y-[var(--space-4)] p-4 bg-[var(--ui-bg)] rounded-lg border border-[var(--ui-border)] mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <UFormField label="Curso / Título">
+                <UInput v-model="temp.formacao.titulo" placeholder="Ex: Ciência da Computação"/>
+              </UFormField>
+              <UFormField label="Instituição">
+                <UInput v-model="temp.formacao.instituicao" placeholder="Ex: USP"/>
+              </UFormField>
+            </div>
+            <div class="flex items-end gap-4">
+              <UFormField label="Ano de Conclusão" class="w-1/3">
+                <UInput v-model="temp.formacao.ano" placeholder="Ex: 2022"/>
+              </UFormField>
+              <UButton label="Adicionar Formação" color="white" variant="solid" @click="adicionarFormacao" block
+                       class="flex-1"/>
+            </div>
           </div>
+
+          <div v-if="form.formacoes.length > 0" class="space-y-3">
+            <div v-for="(edu, index) in form.formacoes" :key="index"
+                 class="flex justify-between items-start border-b border-[var(--ui-border)] pb-2 last:border-0">
+              <div>
+                <p class="font-bold text-[var(--ui-text)]">{{ edu.titulo }}</p>
+                <p class="text-sm text-[var(--ui-text-muted)]">{{ edu.instituicao }} - {{ edu.ano_conclusao }}</p>
+              </div>
+              <button type="button" class="text-red-500 text-sm hover:underline" @click="removerFormacao(index)">
+                Excluir
+              </button>
+            </div>
+          </div>
+          <p v-else class="text-sm text-[var(--ui-text-muted)] italic text-center">Nenhuma formação adicionada.</p>
+
+        </UCard>
+
+        <div class="flex justify-end pt-4">
+          <UButton type="submit" size="xl" color="primary" class="w-full md:w-auto px-12">
+            Finalizar Cadastro
+          </UButton>
         </div>
-        <!--botão cadastro-->
-        <button type="submit" class="bg-[var(--color-dourado)] text-white font-bold py-2 px-4 rounded w-full">
-          Próximo
-        </button>
 
       </form>
     </div>
-  </main>
+  </div>
 </template>
-
-<style scoped>
-h1,
-h2 {
-  color: black;
-}
-
-label {
-  color: black;
-}
-
-input,
-textarea {
-
-  font-size: 16px;
-}
-
-p {
-  color: black;
-}
-
-h3 {
-  color: black;
-  font-size: 20px;
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-</style>

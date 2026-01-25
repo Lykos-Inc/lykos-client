@@ -1,258 +1,294 @@
-<script setup>
-const images = [
-    {
-        src: 'https://picsum.photos/200?random=1',
-        alt: 'Paisagem ao pôr do sol',
-        description: 'Uma bela vista do pôr do sol nas montanhas.'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+definePageMeta({
+  layout: 'default'
+})
+
+const route = useRoute()
+const gigId = route.params.id
+
+// --- Estado dos Pacotes ---
+const selectedPackage = ref('PADRAO') // BASICO, PADRAO, PREMIUM
+const packageItems = [
+  { label: 'Básico', slot: 'BASICO' },
+  { label: 'Padrão', slot: 'PADRAO' },
+  { label: 'Premium', slot: 'PREMIUM' }
+]
+
+// --- Mock do Serviço ---
+const gig = ref({
+  id: gigId,
+  title: 'Eu vou criar uma identidade visual minimalista e atemporal para sua marca',
+  category: 'Design Gráfico > Logo Design',
+  images: [
+    '/images/mock-gig-cover.jpg',
+    '/images/mock-gig-2.jpg',
+    '/images/mock-gig-3.jpg'
+  ],
+  description: `
+    <p class="mb-4">Olá! Sou Bruno, designer sênior com foco em minimalismo.</p>
+    <p class="mb-4">Você está procurando um logotipo que transmita modernidade e sofisticação? Você está no lugar certo.</p>
+    <p class="mb-4"><strong>O que você vai receber:</strong></p>
+    <ul class="list-disc pl-5 space-y-2 mb-4">
+      <li>Conceitos originais e únicos</li>
+      <li>Arquivos em alta resolução (PNG, JPG)</li>
+      <li>Arquivos vetoriais (AI, EPS, SVG)</li>
+      <li>Manual da marca (no pacote Premium)</li>
+    </ul>
+    <p>Vamos elevar o nível da sua marca juntos!</p>
+  `,
+  freelancer: {
+    name: 'Bruno Nunes',
+    username: 'brunonunes',
+    avatar: '/images/avatar-placeholder.jpg',
+    level: 'Nível 2',
+    rating: 5.0,
+    reviewsCount: 128,
+    responseTime: '1 hora'
+  },
+  packages: {
+    BASICO: {
+      name: 'Startup Starter',
+      description: '1 opção de logo + Arquivos PNG/JPG de alta qualidade.',
+      price: 90.00,
+      delivery: 3,
+      revisions: 1,
+      features: ['1 Conceito', 'Alta Resolução', 'Fundo Transparente']
     },
-    {
-        src: 'https://picsum.photos/200?random=2',
-        alt: 'Cidade iluminada à noite',
-        description: 'Luzes da cidade refletindo na água durante a noite.'
+    PADRAO: {
+      name: 'Business Pro',
+      description: '2 opções de logo + Arquivos Vetoriais + Paleta de Cores.',
+      price: 350.00,
+      delivery: 5,
+      revisions: 3,
+      features: ['2 Conceitos', 'Alta Resolução', 'Arquivo Vetorial', 'Paleta de Cores', 'Mockup 3D']
     },
-    {
-        src: 'https://picsum.photos/200?random=3',
-        alt: 'Campo verdejante',
-        description: 'Um campo aberto com vegetação exuberante e céu limpo.'
+    PREMIUM: {
+      name: 'Identidade Completa',
+      description: '3 opções + Manual da Marca + Papelaria + Social Media Kit.',
+      price: 800.00,
+      delivery: 10,
+      revisions: 99, // Ilimitado
+      features: ['3 Conceitos', 'Tudo do Padrão', 'Manual da Marca', 'Social Media Kit', 'Suporte Prioritário']
     }
-]
-
-const packages = [
+  },
+  reviews: [
     {
-        title: "Logo Designer",
-        description:
-            "Este pacote foca no essencial para quem precisa de um logo profissional sem muitas complexidades ou elementos de marca adicionais.",
-        features: [
-            { input: true, box: "1 a 2 conceitos de logo iniciais." },
-            { input: true, box: "Entrega de arquivos em alta resolução" }
-        ]
-        ,
-        prazo: "3-5 dias úteis",
-        revisoes: "2 revisões",
-        preco: "R$ 1200,00"
+      id: 1,
+      user: 'Startup X',
+      avatar: '',
+      rating: 5,
+      comment: 'Trabalho incrível! O Bruno captou exatamente a essência da nossa empresa.',
+      date: 'Há 1 semana'
     },
     {
-        title: "Branding Kit",
-        description:
-            "Este pacote é para quem busca não apenas um logo, mas também alguns elementos de branding.",
-        features: [
-            { input: true, box: "3 a 4 conceitos de brandings iniciais." },
-            { input: true, box: "Paleta de Cores Definida." },
-            { input: true, box: "Manual de Uso Simplificado da Marca" },
-            { input: true, box: "Seleção de Fontes (Primária e Secundária)." }
-        ]
-        ,
-        prazo: "15-30 dias úteis",
-        revisoes: "3-4 revisões",
-        preco: "R$ 10.000,00"
-    },
-    {
-        title: "Brand Strategy",
-        description:
-            "Este é o pacote mais robusto, ideal para empresas que buscam uma imersão completa na estratégia de marca.",
-        features: [
-            { input: true, box: "Brand Book (Manual de Marca Completo)" },
-            { input: true, box: "Pesquisa de Mercado e Análise de Concorrência" },
-            { input: true, box: "Definição de Persona/Público-Alvo" },
-            { input: true, box: "Mockups de Aplicação da Marca" }
-        ],
-
-        prazo: "1-2 meses",
-        revisoes: "7-9 revisões",
-        preco: "R$ 15.000,00"
+      id: 2,
+      user: 'Roberto M.',
+      avatar: '',
+      rating: 5,
+      comment: 'Muito profissional e rápido. Recomendo.',
+      date: 'Há 2 semanas'
     }
-]
+  ]
+})
 
-const checkbox = [
-    { input: true, box: "Design de logotipo personalizado e adaptado à sua marca" },
-    { input: true, box: "Arquivos de alta resolução em vários formatos" },
-    { input: true, box: "Revisões ilimitadas até a satisfação" }
-]
-const rating = 4.9
-const totalReviews = 120
+// --- Computed ---
+const currentPkg = computed(() => gig.value.packages[selectedPackage.value as keyof typeof gig.value.packages])
 
-const distribution = [
-    { stars: 5, percent: 80 },
-    { stars: 4, percent: 14 },
-    { stars: 3, percent: 3 },
-    { stars: 2, percent: 1 },
-    { stars: 1, percent: 2 },
-]
-
-const reviews = ref([
-    {
-        user: "Ethan Bennett",
-        avatar: "https://i.pravatar.cc/50?img=3",
-        date: "1 mês atrás",
-        stars: 5,
-        text: "O design do logotipo da Sophia superou minhas expectativas. Capturou perfeitamente a visão da minha marca.",
-        likes: 2
-    },
-    {
-        user: "Olívia Hayes",
-        avatar: "https://i.pravatar.cc/50?img=5",
-        date: "2 meses atrás",
-        stars: 5,
-        text: "Trabalhar com a Sophia foi um prazer. Ela foi ágil, criativa e criou um logotipo que realmente representa a identidade da minha marca.",
-        likes: 1
-    }
-])
+const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
 </script>
 
 <template>
-    <div class="flex flex-col w-8/12 mx-auto mt-20 mb-20">
-        <div class="flex items-center gap-3 text-gray-800">
-            <!-- Avatar redondo -->
-            <img src="https://i.pravatar.cc/100?u=sophia-carter" alt="Sophia Carter"
-                class="w-10 h-10 rounded-full object-cover" />
+  <div class="max-w-7xl mx-auto px-[var(--space-4)] py-[var(--space-8)]">
 
-            <!-- Nome + rating -->
-            <div>
-                <p class="font-semibold text-sm">Sophia Carter</p>
-                <div class="flex items-center text-sm text-gray-500">
-                    <span class="text-yellow-500">★</span>
-                    <span class="ml-1">4.9</span>
-                    <span class="ml-1 text-gray-400">(120 reviews)</span>
-                </div>
+    <nav class="text-sm text-[var(--ui-text-muted)] mb-6">
+      <NuxtLink to="/dashboard/home" class="hover:text-[var(--ui-primary)]">Home</NuxtLink>
+      <span class="mx-2">/</span>
+      <NuxtLink to="/explorer" class="hover:text-[var(--ui-primary)]">Explorer</NuxtLink>
+      <span class="mx-2">/</span>
+      <span class="text-[var(--ui-text)]">{{ gig.category }}</span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+
+      <div class="lg:col-span-8 space-y-8">
+
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold text-[var(--ui-text)] mb-4 leading-tight">
+            {{ gig.title }}
+          </h1>
+
+          <div class="flex items-center gap-4 text-sm">
+            <div class="flex items-center gap-2">
+              <UAvatar :src="gig.freelancer.avatar" :alt="gig.freelancer.name" size="xs" />
+              <NuxtLink :to="`/f/${gig.freelancer.username}`" class="font-bold text-[var(--ui-text)] hover:underline">
+                {{ gig.freelancer.name }}
+              </NuxtLink>
+              <span class="text-[var(--ui-text-muted)]">|</span>
+              <span class="text-[var(--ui-text-muted)]">{{ gig.freelancer.level }}</span>
             </div>
+
+            <div class="flex items-center gap-1 text-yellow-500">
+              <div class="flex">
+                <UIcon name="i-heroicons-star-solid" v-for="i in 5" :key="i" class="w-4 h-4" />
+              </div>
+              <span class="font-bold text-[var(--ui-text)]">{{ gig.freelancer.rating }}</span>
+              <span class="text-[var(--ui-text-muted)]">({{ gig.freelancer.reviewsCount }})</span>
+            </div>
+          </div>
         </div>
-        <div class="flex justify-center">
-            <UCard class="mt-6 p-6  ">
-                <!-- Corpo: imagens com descrição -->
-                <div class="flex justify-between p-2 gap-4 w-full">
-                    <div v-for="(item, index) in images" :key="index" class=" w-1/3 flex flex-col items-center">
-                        <img :src="item.src" :alt="item.alt" class="w-full h-64 object-cover rounded-lg" />
-                        <p class="text-black text-center mt-1">
-                            {{ item.description }}
-                        </p>
-                    </div>
-                </div>
-            </UCard>
+
+        <div class="rounded-xl overflow-hidden bg-gray-100 aspect-video relative group">
+          <img :src="gig.images[0]" class="w-full h-full object-cover" />
+
+          <div class="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition">
+            <UButton icon="i-heroicons-chevron-left" color="white" variant="solid" :ui="{ rounded: 'rounded-full' }" />
+            <UButton icon="i-heroicons-chevron-right" color="white" variant="solid" :ui="{ rounded: 'rounded-full' }" />
+          </div>
+
+          <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+            <div v-for="(img, idx) in gig.images" :key="idx" class="w-2 h-2 rounded-full bg-white shadow" :class="idx === 0 ? 'bg-white scale-125' : 'bg-white/50'"></div>
+          </div>
         </div>
 
         <div>
-            <h2 class="text-black mt-10 mb-4">Sobre o vendedor</h2>
-            <p class="text-black">
-                Olá! Sou Sophia, uma designer gráfica apaixonada por criar identidades visuais únicas e impactantes. Com
-                mais de 5 anos de experiência, ajudo empresas a se destacarem no mercado através de designs criativos e
-                personalizados. Vamos trabalhar juntos para transformar suas ideias em realidade!
-            </p>
-            <div>
-                <label v-for="(item, index) in checkbox" :key="index"
-                    class="flex items-center gap-2 mt-2 cursor-default select-none">
-                    <input type="checkbox" v-model="item.input" disabled class="w-4 h-4 appearance-none border-2 rounded-sm 
-                    border-[var(--color-dourado)] 
-                    checked: 
-                    cursor-not-allowed" />
-                    <span class="text-black">{{ item.box }}</span>
-                </label>
-            </div>
+          <h2 class="text-xl font-bold text-[var(--ui-text)] mb-4">Sobre este serviço</h2>
+          <div class="prose dark:prose-invert max-w-none text-[var(--ui-text)]" v-html="gig.description"></div>
         </div>
 
-        <div class="divide-gray-600 mt-10 mb-5 divide-y"></div>
+        <UDivider />
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <UCard v-for="(pack, index) in packages" :key="index"
-                class="flex flex-col justify-between border border-[var(--color-dourado)] p-4">
+        <div>
+          <h2 class="text-xl font-bold text-[var(--ui-text)] mb-6">Sobre o Vendedor</h2>
+          <div class="flex gap-4 md:gap-6">
+            <UAvatar :src="gig.freelancer.avatar" :alt="gig.freelancer.name" size="2xl" />
+            <div class="space-y-3">
+              <div>
+                <NuxtLink :to="`/f/${gig.freelancer.username}`" class="text-lg font-bold text-[var(--ui-text)] hover:underline">
+                  {{ gig.freelancer.name }}
+                </NuxtLink>
+                <div class="text-[var(--ui-text-muted)]">{{ gig.category.split('>')[0] }} Specialist</div>
+              </div>
+
+              <div class="flex gap-4 text-sm">
+                <div class="flex items-center gap-1 text-[var(--ui-text-muted)]">
+                  <UIcon name="i-heroicons-star-solid" />
+                  <strong>{{ gig.freelancer.rating }}</strong>
+                </div>
+                <div class="flex items-center gap-1 text-[var(--ui-text-muted)]">
+                  <UIcon name="i-heroicons-chat-bubble-left-ellipsis" />
+                  Resp. média: <strong>{{ gig.freelancer.responseTime }}</strong>
+                </div>
+              </div>
+
+              <p class="text-sm text-[var(--ui-text)]">
+                Especialista em identidades visuais com mais de 5 anos de experiência ajudando startups a se destacarem.
+              </p>
+
+              <UButton variant="outline" :to="`/f/${gig.freelancer.username}`">Ver Perfil Completo</UButton>
+            </div>
+          </div>
+        </div>
+
+        <UDivider />
+
+        <div>
+          <h2 class="text-xl font-bold text-[var(--ui-text)] mb-6">Avaliações</h2>
+          <div class="space-y-6">
+            <div v-for="review in gig.reviews" :key="review.id" class="border-b border-[var(--ui-border)] pb-6 last:border-0">
+              <div class="flex gap-3 mb-2">
+                <UAvatar :alt="review.user" size="sm" />
                 <div>
-                    <!-- Título -->
-                    <h2 class="text-lg font-bold mb-2 text-black">{{ pack.title }}</h2>
-
-                    <!-- Descrição -->
-                    <p class="text-gray-600 mb-4">{{ pack.description }}</p>
-
-                    <!-- Checkboxes -->
-                    <div class="mb-4">
-                        <label v-for="(item, index) in pack.features" :key="index"
-                            class="flex items-center gap-2 mt-2 cursor-default select-none">
-
-                            <input type="checkbox" v-model="item.input" disabled class="w-4 h-4 appearance-none border-2 rounded-sm 
-                                border-[var(--color-dourado)]
-                                cursor-not-allowed" />
-
-                            <span class="text-black">{{ item.box }}</span>
-                        </label>
-
-                    </div>
-
-                    <!-- Informações extras -->
-                    <div class="flex justify-between text-sm text-gray-500 mb-4">
-                        <div>
-                            <p class="font-medium text-[var(--color-dourado)]">Prazo de entrega</p>
-                            <p>{{ pack.prazo }}</p>
-                        </div>
-                        <div>
-                            <p class="font-medium text-[var(--color-dourado)]">Revisões inclusas</p>
-                            <p>{{ pack.revisoes }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Preço -->
-                    <p class="font-bold text-lg mb-4 text-black">Preço<br />{{ pack.preco }}</p>
+                  <div class="text-sm font-bold text-[var(--ui-text)]">{{ review.user }}</div>
+                  <div class="flex text-yellow-400 text-xs">
+                    <UIcon v-for="i in 5" :key="i" name="i-heroicons-star-solid" />
+                    <span class="ml-2 text-[var(--ui-text-muted)] text-xs">{{ review.date }}</span>
+                  </div>
                 </div>
-
-                <!-- Botões -->
-                <div class="mt-auto flex flex-col gap-2 items-center">
-                    <UButton color="yellow" class="text-white font-bold border bg-[var(--color-dourado)] px-15 py-2">
-                        Contratar</UButton>
-                    <UButton class="text-black">Contatar Freelancer</UButton>
-                </div>
-            </UCard>
+              </div>
+              <p class="text-sm text-[var(--ui-text)]">{{ review.comment }}</p>
+            </div>
+          </div>
         </div>
 
-        <div class="grid justify-items-center">
-            <UButton class="mt-10 mb-10 text-white border bg-[var(--color-dourado)] py-5 px-10">Ver mais</UButton>
+      </div>
+
+      <div class="lg:col-span-4">
+        <div class="sticky top-24 space-y-6">
+
+          <UCard :ui="{ root: 'bg-[var(--ui-bg-elevated)] ring-1 ring-[var(--ui-border)] shadow-lg overflow-hidden', body: { padding: 'p-0' } }">
+
+            <div class="grid grid-cols-3 border-b border-[var(--ui-border)] text-center text-sm font-bold bg-[var(--ui-bg)]">
+              <button
+                  v-for="pkg in packageItems"
+                  :key="pkg.slot"
+                  class="py-3 px-1 transition-all border-b-2 hover:bg-[var(--ui-bg-hover)]"
+                  :class="selectedPackage === pkg.slot
+                  ? 'border-[var(--ui-primary)] text-[var(--ui-primary)] bg-[var(--ui-bg-active)]'
+                  : 'border-transparent text-[var(--ui-text-muted)]'"
+                  @click="selectedPackage = pkg.slot"
+              >
+                {{ pkg.label }}
+              </button>
+            </div>
+
+            <div class="p-6 space-y-6">
+              <div class="flex justify-between items-start">
+                <h3 class="font-bold text-lg text-[var(--ui-text)]">{{ currentPkg.name }}</h3>
+                <span class="text-2xl font-bold text-[var(--ui-text)]">{{ money(currentPkg.price) }}</span>
+              </div>
+
+              <p class="text-sm text-[var(--ui-text-muted)]">
+                {{ currentPkg.description }}
+              </p>
+
+              <div class="flex items-center gap-4 text-sm font-bold text-[var(--ui-text)]">
+                <div class="flex items-center gap-1">
+                  <UIcon name="i-heroicons-clock" class="text-[var(--ui-primary)]"/>
+                  {{ currentPkg.delivery }} dias
+                </div>
+                <div class="flex items-center gap-1">
+                  <UIcon name="i-heroicons-arrow-path" class="text-[var(--ui-text-muted)]"/>
+                  {{ currentPkg.revisions === 99 ? '∞' : currentPkg.revisions }} Revisões
+                </div>
+              </div>
+
+              <ul class="space-y-2 text-sm">
+                <li v-for="feat in currentPkg.features" :key="feat" class="flex items-start gap-2 text-[var(--ui-text-muted)]">
+                  <UIcon name="i-heroicons-check" class="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+                  <span>{{ feat }}</span>
+                </li>
+              </ul>
+
+              <div class="space-y-3">
+                <UButton
+                    block
+                    size="xl"
+                    color="green"
+                    trailing-icon="i-heroicons-arrow-right"
+                    :to="`/purchase/checkout/${gig.id}?pacote=${selectedPackage}`"
+                >
+                  Continuar ({{ money(currentPkg.price) }})
+                </UButton>
+
+                <UButton block variant="outline" color="gray">
+                  Contactar Vendedor
+                </UButton>
+              </div>
+            </div>
+
+          </UCard>
+
+          <div class="text-center text-xs text-[var(--ui-text-muted)] px-4">
+            <p>Sua segurança é nossa prioridade.</p>
+            <p class="mt-1">Pagamento protegido até a aprovação do serviço.</p>
+          </div>
+
         </div>
-        <section class="space-y-6">
-            <!-- Cabeçalho -->
-            <div>
-                <h2 class="font-bold text-xl text-black">Avaliações</h2>
-                <div class="flex items-center gap-4 mt-2">
-                    <div class="text-4xl font-bold text-black">{{ rating }}</div>
-                    <div class="flex flex-col">
-                        <div class="flex text-yellow-400">
-                            <UIcon v-for="i in 5" :key="i" name="i-heroicons-star-solid"
-                                :class="i <= Math.round(rating) ? 'text-yellow-400' : 'text-gray-300'" />
-                        </div>
-                        <p class="text-sm text-gray-500">{{ totalReviews }} reviews</p>
-                    </div>
-                </div>
-            </div>
+      </div>
 
-            <!-- Distribuição -->
-            <div class="space-y-2">
-                <div v-for="item in distribution" :key="item.stars" class="flex items-center gap-2 text-black">
-                    <span class="w-4">{{ item.stars }}</span>
-                    <div class="flex-1">
-                        <UProgress :value="item.percent" :max="100" size="sm" color="[var(--color-dourado)]" class="w-full" />
-                    </div>
-                    <span class="text-sm text-gray-500">{{ item.percent }}%</span>
-                </div>
-            </div>
-
-            <!-- Reviews -->
-            <div class="space-y-4">
-                <UCard v-for="(r, i) in reviews" :key="i" class="p-4">
-                    <div class="flex items-center gap-3 mb-2">
-                        <UAvatar :src="r.avatar" size="md" />
-                        <div>
-                            <p class="font-semibold">{{ r.user }}</p>
-                            <p class="text-xs text-gray-500">{{ r.date }}</p>
-                        </div>
-                    </div>
-                    <div class="flex text-yellow-400 mb-2">
-                        <UIcon v-for="i in 5" :key="i" name="i-heroicons-star-solid"
-                            :class="i <= r.stars ? 'text-yellow-400' : 'text-gray-300'" />
-                    </div>
-                    <p class="text-gray-700">{{ r.text }}</p>
-                    <div class="flex items-center gap-2 mt-3 text-sm text-gray-500">
-                        <UIcon name="i-heroicons-hand-thumb-up" />
-                        {{ r.likes }}
-                    </div>
-                </UCard>
-            </div>
-        </section>
     </div>
-
-
+  </div>
 </template>
