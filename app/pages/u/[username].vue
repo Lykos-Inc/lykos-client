@@ -9,12 +9,11 @@ definePageMeta({
 const route = useRoute()
 const usernameParam = route.params.username
 
-// --- Simulação de Auth (Para saber se sou EU vendo meu perfil) ---
-// Em produção: const { user } = useAuth()
-const currentUser = 'brunonunes' // Simula que estou logado como Bruno
+// --- Simulação de Auth ---
+const currentUser = 'brunonunes'
 const isOwner = computed(() => usernameParam === currentUser)
 
-// --- Mock do Usuário (Comprador) ---
+// --- Mock do Usuário ---
 const profile = ref({
   name: 'Bruno Nunes',
   username: usernameParam,
@@ -25,12 +24,12 @@ const profile = ref({
   about: 'Apaixonado por tecnologia e design. Sempre buscando os melhores profissionais para colaborar nos meus projetos.',
   stats: {
     ordersCompleted: 42,
-    totalSpent: 12500.00, // Só o dono vê
+    totalSpent: 12500.00,
     avgRatingReceived: 4.9
   }
 })
 
-// --- Mock: Favoritos (Feature em Produção) ---
+// --- Mock: Favoritos ---
 const favorites = ref([
   {
     id: 101,
@@ -48,8 +47,7 @@ const favorites = ref([
   }
 ])
 
-// --- Mock: Avaliações Recebidas (Freelancer -> Cliente) ---
-// Feature "Nova"
+// --- Mock: Avaliações Recebidas ---
 const reviewsReceived = ref([
   {
     id: 1,
@@ -83,7 +81,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
 
       <div class="md:col-span-4 space-y-[var(--space-6)]">
 
-        <UCard :ui="{ root: 'bg-[var(--ui-bg-elevated)] ring-1 ring-[var(--ui-border)] overflow-hidden sticky top-6' }">
+        <UCard class="sticky top-6 bg-[var(--ui-bg-elevated)] ring-1 ring-[var(--ui-border)] overflow-hidden">
 
           <div class="flex flex-col items-center text-center space-y-4 pb-6 border-b border-[var(--ui-border)]">
             <div class="relative mt-4">
@@ -99,7 +97,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
             </div>
 
             <div class="flex gap-2 justify-center">
-              <UBadge color="gray" variant="solid">Cliente</UBadge>
+              <UBadge color="neutral" variant="solid">Cliente</UBadge>
               <UBadge v-if="isOwner" color="primary" variant="subtle">Você</UBadge>
             </div>
           </div>
@@ -125,7 +123,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
               <span class="font-bold text-[var(--ui-text)]">{{ profile.stats.ordersCompleted }}</span>
             </div>
 
-            <div v-if="isOwner" class="flex justify-between text-sm bg-gray-50 p-2 rounded">
+            <div v-if="isOwner" class="flex justify-between text-sm bg-gray-50 dark:bg-gray-800 p-2 rounded">
               <span class="text-[var(--ui-text-muted)] flex items-center gap-2">
                 <UIcon name="i-heroicons-banknotes" /> Total Investido
               </span>
@@ -140,10 +138,10 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
           </div>
 
           <div v-if="isOwner" class="pt-6 mt-4 border-t border-[var(--ui-border)] space-y-2">
-            <UButton block to="/dashboard/settings" color="gray" variant="ghost" icon="i-heroicons-cog-6-tooth">
+            <UButton block to="/dashboard/settings" color="neutral" variant="ghost" icon="i-heroicons-cog-6-tooth">
               Configurações
             </UButton>
-            <UButton block to="/dashboard/purchases" color="primary" variant="solid" icon="i-heroicons-list-bullet">
+            <UButton block to="/u/orders" color="primary" variant="solid" icon="i-heroicons-list-bullet">
               Meus Pedidos
             </UButton>
           </div>
@@ -156,7 +154,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
         <div v-if="isOwner" class="space-y-4">
           <div class="flex items-center gap-3">
             <h2 class="text-xl font-bold text-[var(--ui-text)]">Meus Favoritos</h2>
-            <UBadge label="Em Breve" color="orange" variant="subtle" size="xs" />
+            <UBadge label="Em Breve" color="warning" variant="subtle" size="xs" />
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -184,7 +182,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <h2 class="text-xl font-bold text-[var(--ui-text)]">Reputação como Cliente</h2>
-              <UBadge label="Novo" color="blue" variant="solid" size="xs" />
+              <UBadge label="Novo" color="primary" variant="solid" size="xs" />
             </div>
             <div class="flex items-center gap-1 font-bold text-yellow-500">
               <UIcon name="i-heroicons-star-solid" />
@@ -200,7 +198,6 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
             <UCard
                 v-for="review in reviewsReceived"
                 :key="review.id"
-                :ui="{ body: { padding: 'p-4 sm:p-6' } }"
             >
               <div class="flex gap-4">
                 <UAvatar :alt="review.freelancerName" size="md" />
@@ -220,7 +217,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
                   <p class="text-sm text-[var(--ui-text)] italic">"{{ review.comment }}"</p>
 
                   <div class="mt-2 pt-2 border-t border-[var(--ui-border)] inline-block">
-                    <UBadge color="gray" variant="soft" size="xs">Projeto: {{ review.project }}</UBadge>
+                    <UBadge color="neutral" variant="soft" size="xs">Projeto: {{ review.project }}</UBadge>
                   </div>
                 </div>
               </div>

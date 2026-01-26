@@ -32,11 +32,11 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'IN_PROGRESS': return 'blue'
-    case 'LATE': return 'red'
-    case 'DELIVERED': return 'purple'
-    case 'COMPLETED': return 'green'
-    default: return 'gray'
+    case 'IN_PROGRESS': return 'primary'
+    case 'LATE': return 'error'
+    case 'DELIVERED': return 'secondary'
+    case 'COMPLETED': return 'success'
+    default: return 'neutral'
   }
 }
 </script>
@@ -47,8 +47,9 @@ const getStatusColor = (status: string) => {
       <h1 class="text-2xl font-bold text-[var(--ui-text)]">Gerenciar Vendas</h1>
     </div>
 
-    <UCard :ui="{ body: { padding: 'p-0' } }">
-      <div class="overflow-x-auto">
+    <UCard class="overflow-hidden">
+
+      <div class="-mx-4 sm:-mx-6 -my-4 sm:-my-6 overflow-x-auto">
         <table class="w-full text-sm text-left">
           <thead class="bg-[var(--ui-bg-elevated)] text-[var(--ui-text-muted)] uppercase text-xs">
           <tr>
@@ -75,7 +76,7 @@ const getStatusColor = (status: string) => {
               <UBadge :color="getStatusColor(order.status)" variant="subtle" size="xs">{{ order.status }}</UBadge>
             </td>
             <td class="p-4 text-right">
-              <UButton size="xs" color="gray" :to="`/u/orders/${order.id}`">Ver Pedido</UButton>
+              <UButton size="xs" color="neutral" :to="`/u/orders/${order.id}`">Ver Pedido</UButton>
             </td>
           </tr>
           </tbody>

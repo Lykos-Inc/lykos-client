@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {reactive, ref, computed} from 'vue'
+import { reactive, ref, computed } from 'vue'
 
 definePageMeta({
   layout: 'default',
@@ -58,21 +58,23 @@ const subcategoriasFiltradas = computed(() => {
   return subcategoriasMock.filter(s => s.categoria_id === state.categoria?.id)
 })
 
-// --- Upload ---
-const handleFileChange = (e: FileList) => {
-  if (e.length > 0) {
-    state.imagemCapa = e[0]
+// --- Upload (CORRIGIDO) ---
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+
+  if (target.files && target.files.length > 0) {
+    // Adicione "|| null" para converter undefined em null
+    state.imagemCapa = target.files[0] || null
   }
 }
 
 // --- Submit ---
 const onSubmit = async () => {
-  // Validações básicas (exemplo simplificado)
+  // Validações básicas
   if (!state.titulo) return alert('Título é obrigatório')
   if (!state.subcategoria) return alert('Subcategoria é obrigatória')
   if (!state.pacotes.basico.preco) return alert('Preço do pacote básico é obrigatório')
 
-  // Montando o Payload para o Catalog Service (Backend espera array de pacotes)
   const payload = {
     titulo: state.titulo,
     subcategoria_id: state.subcategoria.id,
@@ -87,7 +89,7 @@ const onSubmit = async () => {
         revisoes: state.pacotes.basico.revisoes
       },
       {
-        tipo: 'PADRAO', // Backend: PADRAO = Intermediário
+        tipo: 'PADRAO',
         nome: 'Intermediário',
         descricao: state.pacotes.padrao.descricao || 'Pacote padrão',
         preco: state.pacotes.padrao.preco,
@@ -95,7 +97,7 @@ const onSubmit = async () => {
         revisoes: state.pacotes.padrao.revisoes
       },
       {
-        tipo: 'PREMIUM', // Backend: PREMIUM = Avançado
+        tipo: 'PREMIUM',
         nome: 'Avançado',
         descricao: state.pacotes.premium.descricao || 'Pacote completo',
         preco: state.pacotes.premium.preco,
@@ -188,7 +190,7 @@ const onSubmit = async () => {
           <UFormField label="Imagem de Capa">
             <div
                 class="border-2 border-dashed border-[var(--ui-border)] rounded-lg p-8 flex flex-col items-center justify-center text-center hover:bg-[var(--ui-bg-hover)] transition">
-              <input type="file" id="coverUpload" class="hidden" @change="(e) => handleFileChange(e.target.files)"
+              <input type="file" id="coverUpload" class="hidden" @change="handleFileChange"
                      accept="image/*">
               <label for="coverUpload" class="cursor-pointer w-full">
                 <div v-if="state.imagemCapa" class="text-[var(--ui-success)] font-medium">
@@ -248,7 +250,7 @@ Suporte Prioritário" :rows="6" class="w-full"/>
       </UCard>
 
       <div class="flex justify-end gap-[var(--space-4)]">
-        <UButton variant="ghost" to="/dashboard/sales/gigs">Cancelar</UButton>
+        <UButton variant="ghost" to="/selling/gigs">Cancelar</UButton>
         <UButton type="submit" size="xl" color="primary">Publicar Serviço</UButton>
       </div>
 

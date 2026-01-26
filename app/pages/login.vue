@@ -105,7 +105,7 @@ const handleGoogleLogin = () => {
 
           <UButton
               block
-              color="gray"
+              color="neutral"
               variant="outline"
               icon="i-simple-icons-google"
               label="Continuar com Google"

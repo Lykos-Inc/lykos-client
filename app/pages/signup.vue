@@ -8,6 +8,7 @@ definePageMeta({
 })
 
 
+const currentYear = new Date().getFullYear();
 
 // --- Validação (Alinhada com o Backend) ---
 const schema = v.object({

@@ -57,7 +57,7 @@ const sendMessage = () => {
           <p><strong>Vendedor:</strong> {{ order.freelancer }}</p>
           <p><strong>Valor:</strong> R$ {{ order.price }}</p>
         </div>
-        <template #footer><UButton block color="gray" variant="outline">Central de Ajuda</UButton></template>
+        <template #footer><UButton block color="neutral" variant="outline">Central de Ajuda</UButton></template>
       </UCard>
     </div>
   </div>

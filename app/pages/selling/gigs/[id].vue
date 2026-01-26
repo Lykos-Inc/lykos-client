@@ -45,7 +45,7 @@ const items = [{ label: 'Informações Básicas' }, { label: 'Preços' }, { labe
       </div>
       <div class="flex gap-2">
         <UButton variant="ghost" to="/selling/gigs">Cancelar</UButton>
-        <UButton color="green" @click="saveChanges">Salvar Alterações</UButton>
+        <UButton color="success" @click="saveChanges">Salvar Alterações</UButton>
       </div>
     </div>
 

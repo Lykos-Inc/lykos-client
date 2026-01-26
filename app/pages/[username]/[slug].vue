@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
+
 definePageMeta({ layout: 'default' })
 
 const route = useRoute()
@@ -18,7 +19,12 @@ const gig = ref({
     PREMIUM: { name: 'Pro', price: 800, desc: 'Identidade Completa' }
   }
 })
-const selectedPkg = ref('PADRAO')
+
+// --- FIX 1: Tipagem Estrita para as Chaves ---
+type PackageKey = keyof typeof gig.value.packages
+const selectedPkg = ref<PackageKey>('PADRAO')
+
+// O computed agora sabe que selectedPkg.value é uma chave válida
 const currentPkg = computed(() => gig.value.packages[selectedPkg.value])
 </script>
 
@@ -36,20 +42,24 @@ const currentPkg = computed(() => gig.value.packages[selectedPkg.value])
     </div>
 
     <div class="lg:col-span-4 sticky top-24 h-fit">
-      <UCard :ui="{ body: { padding: 'p-0' } }">
-        <div class="grid grid-cols-3 text-center text-sm font-bold border-b bg-gray-50">
-          <div v-for="(val, key) in gig.packages" :key="key" @click="selectedPkg = key"
-               class="py-3 cursor-pointer border-b-2 transition"
-               :class="selectedPkg === key ? 'border-primary text-primary bg-white' : 'border-transparent text-gray-500'">
-            {{ val.name }}
+      <UCard class="overflow-hidden">
+
+        <div class="-mx-4 -mt-4 sm:-mx-6 sm:-mt-6 mb-6">
+          <div class="grid grid-cols-3 text-center text-sm font-bold border-b bg-gray-50">
+            <div v-for="(val, key) in gig.packages" :key="key" @click="selectedPkg = key as PackageKey"
+                 class="py-3 cursor-pointer border-b-2 transition"
+                 :class="selectedPkg === key ? 'border-primary text-primary bg-white' : 'border-transparent text-gray-500'">
+              {{ val.name }}
+            </div>
           </div>
         </div>
-        <div class="p-6 space-y-4">
+
+        <div class="space-y-4">
           <div class="flex justify-between font-bold text-lg">
             <span>{{ currentPkg.name }}</span> <span>R$ {{ currentPkg.price }}</span>
           </div>
           <p class="text-sm text-gray-500">{{ currentPkg.desc }}</p>
-          <UButton block size="xl" color="green" :to="`/checkout/123?pacote=${selectedPkg}`">
+          <UButton block size="xl" color="neutral" :to="`/checkout/123?pacote=${selectedPkg}`">
             Continuar (R$ {{ currentPkg.price }})
           </UButton>
         </div>

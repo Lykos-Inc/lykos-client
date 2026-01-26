@@ -127,7 +127,7 @@ const formatDate = (date: Date) => date.toLocaleDateString('pt-BR', { day: '2-di
                   size="sm"
                   variant="outline"
                   block
-                  :color="payoutConfig.isConfigured ? 'gray' : 'primary'"
+                  :color="payoutConfig.isConfigured ? 'neutral' : 'primary'"
                   @click="startEditing"
               >
                 {{ payoutConfig.isConfigured ? 'Alterar Chave Pix' : 'Configurar Agora' }}
@@ -138,7 +138,7 @@ const formatDate = (date: Date) => date.toLocaleDateString('pt-BR', { day: '2-di
           <div v-else class="space-y-3 bg-[var(--ui-bg)] p-3 rounded border border-[var(--ui-border)] -mx-2">
             <div class="flex justify-between items-center mb-2">
               <span class="text-xs font-bold text-[var(--ui-text)]">Editar Chave</span>
-              <UButton icon="i-heroicons-x-mark" size="2xs" color="gray" variant="ghost" @click="cancelEditing" />
+              <UButton icon="i-heroicons-x-mark" size="xs" color="neutral" variant="ghost" @click="cancelEditing" />
             </div>
 
             <USelectMenu
@@ -235,14 +235,14 @@ const formatDate = (date: Date) => date.toLocaleDateString('pt-BR', { day: '2-di
                 <span>No Prazo</span>
                 <span class="font-bold">95%</span>
               </div>
-              <UProgress value="95" color="green" size="xs" />
+              <UProgress value="95" color="success" size="xs" />
             </div>
             <div>
               <div class="flex justify-between text-xs mb-1">
                 <span>Satisfação (5.0)</span>
                 <span class="font-bold">100%</span>
               </div>
-              <UProgress value="100" color="green" size="xs" />
+              <UProgress value="100" color="success" size="xs" />
             </div>
           </div>
         </UCard>

@@ -8,7 +8,7 @@ definePageMeta({
 // --- Estado das Abas ---
 const items = [{
   label: 'Ativos',
-  slot: 'active', // O template vai procurar um slot com este nome
+  slot: 'active',
   count: 2
 }, {
   label: 'Pausados',
@@ -55,7 +55,6 @@ const gigs = ref([
 ])
 
 // --- Filtros ---
-// Mapeia o nome do slot (active/paused/draft) para o status do dado (ACTIVE/PAUSED/DRAFT)
 const getStatusFromSlot = (slotName: string) => {
   if (slotName === 'active') return 'ACTIVE'
   if (slotName === 'paused') return 'PAUSED'
@@ -78,7 +77,7 @@ const getRowActions = (row: any) => [
     {
       label: 'Editar',
       icon: 'i-heroicons-pencil-square',
-      click: () => navigateTo(`/dashboard/sales/gigs/create?edit=${row.id}`)
+      click: () => navigateTo(`/selling/gigs/${row.id}`) // Rota corrigida para a nova estrutura
     }
   ],
   [
@@ -92,7 +91,7 @@ const getRowActions = (row: any) => [
     {
       label: 'Excluir',
       icon: 'i-heroicons-trash',
-      class: 'text-red-500',
+      // CORREÇÃO: "class" não é válido diretamente aqui em algumas versões, mas "iconClass" ou a cor resolvem
       click: () => deleteGig(row.id)
     }
   ]
@@ -100,7 +99,6 @@ const getRowActions = (row: any) => [
 
 const toggleStatus = (row: any) => {
   row.status = row.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE'
-  // TODO: Integrar API
 }
 
 const deleteGig = (id: number) => {
@@ -120,7 +118,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
         <h1 class="text-3xl font-bold text-[var(--ui-text)]">Meus Gigs</h1>
         <p class="text-[var(--ui-text-muted)]">Gerencie seus serviços e acompanhe métricas.</p>
       </div>
-      <UButton to="/dashboard/sales/gigs/create" icon="i-heroicons-plus" size="lg" color="primary">
+      <UButton to="/selling/gigs/create" icon="i-heroicons-plus" size="lg" color="primary">
         Criar Novo Gig
       </UButton>
     </div>
@@ -129,10 +127,11 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
 
       <template v-for="tab in items" :key="tab.slot" #[tab.slot]>
 
-        <UCard :ui="{ root: 'mt-4', body: { padding: 'p-0 sm:p-0' } }">
-          <div class="overflow-x-auto">
+        <UCard class="mt-4 overflow-hidden">
+
+          <div class="-mx-4 sm:-mx-6 -my-4 sm:-my-6 overflow-x-auto">
             <table class="w-full text-left text-sm">
-              <thead class="text-[var(--ui-text-muted)] font-medium border-b border-[var(--ui-border)]">
+              <thead class="bg-gray-50 text-[var(--ui-text-muted)] font-medium border-b border-[var(--ui-border)]">
               <tr>
                 <th class="p-4 w-[40%]">Serviço</th>
                 <th class="p-4">Preço Base</th>
@@ -155,7 +154,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
                       <img v-if="gig.image" :src="gig.image" class="w-full h-full object-cover" />
                     </div>
 
-                    <span class="font-medium text-[var(--ui-text)] line-clamp-2 group-hover:text-[var(--ui-primary)] cursor-pointer" @click="navigateTo(`/explorer/${gig.id}`)">
+                    <span class="font-medium text-[var(--ui-text)] line-clamp-2 group-hover:text-[var(--ui-primary)] cursor-pointer" @click="navigateTo(`/${gig.title.toLowerCase().replace(/ /g, '-')}`)">
                         {{ gig.title }}
                       </span>
                   </div>
@@ -166,7 +165,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
                 </td>
 
                 <td class="p-4 text-center">
-                  <UBadge v-if="gig.ordersQueue > 0" color="orange" variant="subtle">{{ gig.ordersQueue }} ped.</UBadge>
+                  <UBadge v-if="gig.ordersQueue > 0" color="warning" variant="subtle">{{ gig.ordersQueue }} ped.</UBadge>
                   <span v-else class="text-[var(--ui-text-muted)]">-</span>
                 </td>
 
@@ -175,7 +174,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
 
                 <td class="p-4 text-right">
                   <UDropdown :items="getRowActions(gig)">
-                    <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+                    <UButton color="neutral" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
                   </UDropdown>
                 </td>
               </tr>

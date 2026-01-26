@@ -29,7 +29,7 @@ const profile = ref({
         <div class="mt-6 text-left text-sm space-y-2">
           <p>{{ profile.bio }}</p>
           <div class="pt-2"><strong class="block mb-1">Skills:</strong>
-            <div class="flex flex-wrap gap-1"><UBadge v-for="s in profile.skills" :key="s" color="gray" variant="soft">{{ s }}</UBadge></div>
+            <div class="flex flex-wrap gap-1"><UBadge v-for="s in profile.skills" :key="s" color="neutral" variant="soft">{{ s }}</UBadge></div>
           </div>
         </div>
       </UCard>

@@ -19,7 +19,11 @@ const categories = [
   { label: 'IA e Dados', icon: 'i-heroicons-cpu-chip' }
 ]
 
-// Simula serviços baseados em histórico (ex: O usuário olhou Logotipos)
+// Helper para gerar slug (apenas para o mock funcionar com as novas rotas)
+const makeSlug = (title: string) => title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')
+const makeUsername = (name: string) => name.toLowerCase().replace(/ /g, '')
+
+// Simula serviços baseados em histórico
 const recommendedGigs = ref([
   {
     id: 101,
@@ -28,7 +32,7 @@ const recommendedGigs = ref([
     rating: 5.0,
     reviews: 128,
     price: 500,
-    image: '/images/mock-gig-1.jpg', // Placeholder
+    image: '/images/mock-gig-1.jpg',
     video: false
   },
   {
@@ -63,7 +67,7 @@ const recommendedGigs = ref([
   }
 ])
 
-// Simula Feed Infinito (Mistura de categorias)
+// Simula Feed Infinito
 const feedGigs = ref([
   {
     id: 201,
@@ -73,7 +77,7 @@ const feedGigs = ref([
     reviews: 32,
     price: 200,
     image: '/images/mock-video-thumb.jpg',
-    video: true // Tem ícone de vídeo
+    video: true
   },
   {
     id: 202,
@@ -105,7 +109,6 @@ const feedGigs = ref([
     image: '/images/mock-seo.jpg',
     video: false
   },
-  // ... duplicando para simular grid maior
   {
     id: 205,
     title: 'Ilustração Digital Estilo Cyberpunk',
@@ -119,12 +122,15 @@ const feedGigs = ref([
 ])
 
 const loadMore = () => {
-  // Simula carregar mais itens no scroll infinito
   feedGigs.value.push(...feedGigs.value)
 }
 
 // Formatação
 const formatPrice = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
+
+const handleSearch = () => {
+  navigateTo({ path: '/search', query: { q: searchQuery.value } })
+}
 </script>
 
 <template>
@@ -143,8 +149,12 @@ const formatPrice = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'cu
                 type="text"
                 placeholder="Qual serviço você está procurando hoje?"
                 class="flex-1 px-6 py-4 text-gray-700 focus:outline-none"
+                @keyup.enter="handleSearch"
             />
-            <button class="bg-[var(--ui-primary)] text-white px-8 font-bold hover:brightness-110 transition">
+            <button
+                class="bg-[var(--ui-primary)] text-white px-8 font-bold hover:brightness-110 transition"
+                @click="handleSearch"
+            >
               <UIcon name="i-heroicons-magnifying-glass" class="w-6 h-6" />
             </button>
           </div>
@@ -186,7 +196,7 @@ const formatPrice = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'cu
             <h2 class="text-2xl font-bold text-[var(--ui-text)]">Baseado no seu histórico</h2>
             <p class="text-[var(--ui-text-muted)]">Porque você visualizou "Identidade Visual"</p>
           </div>
-          <UButton variant="link" color="gray" trailing-icon="i-heroicons-arrow-right">Ver tudo</UButton>
+          <UButton variant="link" color="neutral" trailing-icon="i-heroicons-arrow-right" to="/search">Ver tudo</UButton>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -194,7 +204,7 @@ const formatPrice = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'cu
               v-for="gig in recommendedGigs"
               :key="gig.id"
               class="group cursor-pointer"
-              @click="navigateTo(`/explorer/${gig.id}`)"
+              @click="navigateTo(`/${makeUsername(gig.freelancer.name)}/${makeSlug(gig.title)}`)"
           >
             <div class="bg-[var(--ui-bg-elevated)] border border-[var(--ui-border)] rounded-lg overflow-hidden hover:shadow-lg transition duration-300 flex flex-col h-full">
               <div class="relative aspect-[4/3] bg-gray-200 overflow-hidden">
@@ -242,7 +252,7 @@ const formatPrice = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'cu
           <p class="text-purple-100 mb-6 text-lg">
             Talentos verificados para projetos críticos. A melhor qualidade, garantida.
           </p>
-          <UButton color="white" variant="solid" size="lg" class="text-purple-900 font-bold">
+          <UButton color="neutral" variant="solid" size="lg" class="text-purple-900 font-bold">
             Explorar Lykos Pro
           </UButton>
         </div>
@@ -259,7 +269,7 @@ const formatPrice = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'cu
               v-for="gig in feedGigs"
               :key="gig.id"
               class="group cursor-pointer"
-              @click="navigateTo(`/explorer/${gig.id}`)"
+              @click="navigateTo(`/${makeUsername(gig.freelancer.name)}/${makeSlug(gig.title)}`)"
           >
             <div class="bg-[var(--ui-bg-elevated)] border border-[var(--ui-border)] rounded-lg overflow-hidden hover:shadow-lg transition duration-300 h-full flex flex-col">
               <div class="relative aspect-video bg-gray-200">
@@ -293,8 +303,7 @@ const formatPrice = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'cu
           <UButton
               variant="outline"
               size="xl"
-              class="px-12"
-              :ui="{ rounded: 'rounded-full' }"
+              class="px-12 rounded-full"
               @click="loadMore"
           >
             Carregar mais serviços

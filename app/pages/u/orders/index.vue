@@ -54,14 +54,15 @@ const filterOrders = (slotName: string) => {
 }
 
 // --- Helpers Visuais ---
+// CORREÇÃO: Uso de 'as const' para garantir a tipagem literal das cores
 const getStatusBadge = (status: string) => {
   switch (status) {
-    case 'IN_PROGRESS': return { label: 'Em Andamento', color: 'blue', icon: 'i-heroicons-arrow-path' }
-    case 'DELIVERED': return { label: 'Aguardando Aprovação', color: 'purple', icon: 'i-heroicons-gift' }
-    case 'LATE': return { label: 'Atrasado', color: 'red', icon: 'i-heroicons-exclamation-circle' }
-    case 'COMPLETED': return { label: 'Concluído', color: 'green', icon: 'i-heroicons-check-badge' }
-    case 'CANCELED': return { label: 'Cancelado', color: 'gray', icon: 'i-heroicons-x-circle' }
-    default: return { label: status, color: 'gray', icon: '' }
+    case 'IN_PROGRESS': return { label: 'Em Andamento', color: 'primary' as const, icon: 'i-heroicons-arrow-path' }
+    case 'DELIVERED': return { label: 'Aguardando Aprovação', color: 'secondary' as const, icon: 'i-heroicons-gift' }
+    case 'LATE': return { label: 'Atrasado', color: 'error' as const, icon: 'i-heroicons-exclamation-circle' }
+    case 'COMPLETED': return { label: 'Concluído', color: 'success' as const, icon: 'i-heroicons-check-badge' }
+    case 'CANCELED': return { label: 'Cancelado', color: 'neutral' as const, icon: 'i-heroicons-x-circle' }
+    default: return { label: status, color: 'neutral' as const, icon: '' }
   }
 }
 
@@ -88,11 +89,8 @@ const formatDate = (d: Date) => d.toLocaleDateString('pt-BR')
               class="group"
           >
             <UCard
-                :ui="{
-                root: 'hover:ring-1 hover:ring-[var(--ui-primary)] transition cursor-pointer',
-                body: { padding: 'p-3 sm:p-4' }
-              }"
-                @click="navigateTo(`/orders/${order.id}`)"
+                class="hover:ring-1 hover:ring-[var(--ui-primary)] transition cursor-pointer"
+                @click="navigateTo(`/u/orders/${order.id}`)"
             >
               <div class="flex gap-4">
 
@@ -148,7 +146,7 @@ const formatDate = (d: Date) => d.toLocaleDateString('pt-BR')
             <UIcon name="i-heroicons-shopping-bag" class="w-12 h-12 text-[var(--ui-text-muted)] opacity-50 mx-auto mb-4"/>
             <h3 class="text-lg font-bold text-[var(--ui-text)]">Nenhum pedido aqui</h3>
             <p class="text-[var(--ui-text-muted)] mb-6">Você não tem compras nesta categoria.</p>
-            <UButton to="/explorer" size="lg" color="primary">Explorar Serviços</UButton>
+            <UButton to="/search" size="lg" color="primary">Explorar Serviços</UButton>
           </div>
 
         </div>

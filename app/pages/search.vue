@@ -151,7 +151,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
 
       <aside class="w-full lg:w-64 flex-shrink-0 space-y-6">
 
-        <UCard :ui="{ body: { padding: 'p-4' } }">
+        <UCard class="p-4" } }">
           <h3 class="font-bold text-[var(--ui-text)] mb-3">Categorias</h3>
 
           <div class="flex flex-col gap-2">
@@ -171,7 +171,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
           </div>
         </UCard>
 
-        <UCard :ui="{ body: { padding: 'p-4' } }">
+        <UCard class="p-4">
           <h3 class="font-bold text-[var(--ui-text)] mb-3">Faixa de Preço</h3>
           <div class="grid grid-cols-2 gap-2 mb-2">
             <UInput v-model="filters.minPrice" type="number" placeholder="Min" size="sm" />
@@ -179,7 +179,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
           </div>
         </UCard>
 
-        <UCard :ui="{ body: { padding: 'p-4' } }">
+        <UCard class="p-4">
           <h3 class="font-bold text-[var(--ui-text)] mb-3">Prazo de Entrega</h3>
 
           <div class="flex flex-col gap-2">
@@ -268,7 +268,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
           <p class="text-[var(--ui-text-muted)] mt-2">Tente ajustar seus filtros.</p>
           <UButton
               label="Limpar Filtros"
-              color="gray"
+              color="neutral"
               variant="ghost"
               class="mt-4"
               @click="filters.category = 'all'; filters.minPrice = undefined; filters.maxPrice = undefined; filters.deliveryTime = undefined"
