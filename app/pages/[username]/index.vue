@@ -25,7 +25,7 @@ const profile = ref({
         <h1 class="text-xl font-bold">{{ profile.name }}</h1>
         <p class="text-gray-500">@{{ profile.username }}</p>
         <div class="my-4"><UBadge color="primary">{{ profile.level }}</UBadge></div>
-        <UButton block>Contactar</UButton>
+        <UButton block>Contatar</UButton>
         <div class="mt-6 text-left text-sm space-y-2">
           <p>{{ profile.bio }}</p>
           <div class="pt-2"><strong class="block mb-1">Skills:</strong>

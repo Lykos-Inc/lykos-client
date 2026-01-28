@@ -18,7 +18,7 @@ const filters = ref({
   sortBy: 'recommended'
 })
 
-// --- Opções (Arrays Simples) ---
+// --- Opções ---
 const categories = [
   { label: 'Todas as Categorias', value: 'all' },
   { label: 'Design Gráfico', value: 'design' },
@@ -151,7 +151,7 @@ const money = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency
 
       <aside class="w-full lg:w-64 flex-shrink-0 space-y-6">
 
-        <UCard class="p-4" } }">
+        <UCard class="p-4">
           <h3 class="font-bold text-[var(--ui-text)] mb-3">Categorias</h3>
 
           <div class="flex flex-col gap-2">
