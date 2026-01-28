@@ -1,0 +1,9 @@
+<template>
+  <div>
+    <NavbarGuest/>
+    <main>
+      <slot/>
+    </main>
+    <AppFooter/>
+  </div>
+</template>

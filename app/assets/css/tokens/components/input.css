@@ -1,0 +1,20 @@
+:root {
+    /* Background */
+    --input-bg: var(--ui-bg-elevated);
+    --input-bg-disabled: var(--ui-bg-muted);
+
+    /* Border */
+    --input-border: var(--ui-border);
+    --input-border-focus: var(--ui-primary);
+    --input-border-error: #dc2626; /* depois vira token de danger */
+
+    /* Text */
+    --input-text: var(--ui-text);
+    --input-placeholder: var(--ui-text-muted);
+
+    /* Ring */
+    --input-ring: var(--ui-ring);
+
+    /* Radius */
+    --input-radius: var(--radius-md);
+}
