@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 
 definePageMeta({
   layout: 'auth'
 })
 
-const loading = ref(false)
-const showSocial = ref(false) // Mude para true quando o backend de OAuth Google estiver pronto
+// Importa a lógica de autenticação
+const { login, loading } = useAuth()
+const router = useRouter()
+const toast = useToast()
+
+const showSocial = ref(false) // Mude para true quando configurar Google
 
 const form = reactive({
   email: '',
@@ -14,21 +18,48 @@ const form = reactive({
 })
 
 const handleLogin = async () => {
-  loading.value = true
   try {
-    // Simula API
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    navigateTo('/home')
-  } catch (error) {
-    console.error(error)
-  } finally {
-    loading.value = false
+    // Mapeia os dados do formulário para o formato que a interface LoginPayload espera
+    await login({
+      email: form.email,
+      password: form.password
+    })
+
+    // Sucesso
+    toast.add({
+      title: 'Bem-vindo de volta!',
+      description: 'Login realizado com sucesso.',
+      color: 'success',
+      icon: 'i-heroicons-check-circle'
+    })
+
+    // Redireciona para a home ou dashboard
+    await navigateTo('/home')
+
+  } catch (error: any) {
+    console.error('Erro Login:', error)
+
+    // Tratamento de erro específico para Login
+    let msg = 'Falha ao entrar.'
+
+    // O dj-rest-auth costuma retornar { "non_field_errors": ["Unable to log in..."] }
+    if (error.non_field_errors) {
+      msg = 'E-mail ou senha incorretos.'
+    } else if (error.detail) {
+      msg = error.detail
+    }
+
+    toast.add({
+      title: 'Acesso Negado',
+      description: msg,
+      color: 'error',
+      icon: 'i-heroicons-exclamation-circle'
+    })
   }
 }
 
 const handleGoogleLogin = () => {
-  // Lógica futura do Google OAuth
-  console.log('Iniciando login com Google...')
+  console.log('Em breve...')
 }
 </script>
 
@@ -40,7 +71,7 @@ const handleGoogleLogin = () => {
       <div class="max-w-md w-full mx-auto space-y-8">
 
         <NuxtLink to="/" class="flex items-center gap-2 text-[var(--ui-primary)] font-bold text-xl mb-8 w-fit">
-          <img src="~/assets/img/Logo.png"  alt="lykos"/>
+          <img src="~/assets/img/Logo.png" alt="lykos" class="h-8"/>
         </NuxtLink>
 
         <div>
@@ -87,9 +118,10 @@ const handleGoogleLogin = () => {
               size="xl"
               color="primary"
               :loading="loading"
+              :disabled="loading"
               class="font-bold w-full"
           >
-            Entrar
+            {{ loading ? 'Entrando...' : 'Entrar' }}
           </UButton>
         </form>
 
@@ -124,7 +156,7 @@ const handleGoogleLogin = () => {
       </div>
     </div>
 
-    <div class="hidden lg:flex lg:w-1/2 relative bg-[var(--ui-primary)] overflow-hidden">
+    <div class="hidden lg:flex lg:w-1/2 relative bg-[var(--ui-primary)] overflow-hidden sticky top-0 h-screen">
 
       <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay opacity-20"></div>
       <div class="absolute inset-0 bg-gradient-to-tr from-black/60 to-transparent"></div>

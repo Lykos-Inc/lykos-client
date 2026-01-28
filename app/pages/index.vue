@@ -110,28 +110,15 @@
       </UCard>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="py-12 text-center space-y-6 text-sm text-gray-600">
-      <div class="flex justify-center gap-8">
-        <span v-for="l in links" :key="l">{{ l }}</span>
-      </div>
-
-      <div class="flex justify-center gap-5">
-        <UIcon
-            v-for="i in socials"
-            :key="i"
-            :name="i"
-            class="w-5 h-5"
-        />
-      </div>
-
-      <p>© 2024 Premium</p>
-    </footer>
   </div>
 </template>
 
 <script setup>
-definePageMeta({layout: 'default'})
+definePageMeta(
+    {
+      layout: 'guest'
+    }
+)
 
 const heroBg =
     'https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=1600&q=80'

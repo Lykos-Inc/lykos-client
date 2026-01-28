@@ -10,6 +10,20 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt'
   ],
 
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost/api' // O Traefik responde na porta 80
+    }
+  },
+
+  imports:{
+    dirs:[
+      'composables',
+      'composables/**',
+      'services'
+    ]
+  },
+
   css: [
     '~/assets/css/main.css'
   ],
